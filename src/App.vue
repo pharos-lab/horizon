@@ -1,7 +1,10 @@
 <template>
   <h1>test table</h1>
 
-  <Table :data="data"/>
+  <div class="p-8">
+
+    <Table :data="data" :labels="labels"></Table>
+  </div>
 </template>
 
 <script setup>
@@ -51,6 +54,8 @@ const data = [
     active: true
   }
 ]
+
+const labels = ['Prénom', 'Nom', 'Age', 'Actif']
 </script>
 
 
