@@ -3,7 +3,7 @@
 
   <div class="p-8">
 
-    <Table :data="data" :labels="labels"></Table>
+    <Table :data="data" :labels="labels" :sortable="['name', 'active']"></Table>
   </div>
 </template>
 
@@ -18,28 +18,28 @@ const data = [
     active: true
   },
   {
-    name: 'mth',
-    lastName: 'dht',
+    name: 'mickey',
+    lastName: 'edjdkje',
+    age: 35,
+    active: false
+  },
+  {
+    name: 'eruiruei',
+    lastName: 'vbdfvkdk',
+    age: 35,
+    active: false
+  },
+  {
+    name: 'paozaka',
+    lastName: 'kkqsjazi',
     age: 35,
     active: true
   },
   {
-    name: 'mth',
-    lastName: 'dht',
+    name: 'lsdklz',
+    lastName: 'azlieo',
     age: 35,
-    active: true
-  },
-  {
-    name: 'mth',
-    lastName: 'dht',
-    age: 35,
-    active: true
-  },
-  {
-    name: 'mth',
-    lastName: 'dht',
-    age: 35,
-    active: true
+    active: false
   },
   {
     name: 'mth',

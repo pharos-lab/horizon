@@ -9,15 +9,20 @@
                         class="horizon-th text-left px-4 py-2" 
                         v-for="(label, indexLabel) in (labels || Object.keys(props.data[0]))"
                         :key="indexLabel"
+                        @click="sortLabel(label)"
                         >
-                        {{ label }}
+                        <div class="flex gap-2 items-center">
+                            {{ label }}
+                            <ChevronDownIcon v-if="hasSort(label) && sortOrder == 'asc'" class="size-4"></ChevronDownIcon>
+                            <ChevronUpIcon v-if="hasSort(label) && sortOrder == 'desc'" class="size-4"></ChevronUpIcon>
+                        </div>
                     </th>
                 </tr>
             </thead>
 
 
             <tbody class="horizon-tbody">
-                <tr class="horizon-tr" v-for="(row, indexRow) in props.data" :key="indexRow">
+                <tr class="horizon-tr" v-for="(row, indexRow) in sortedData" :key="indexRow">
                     <td class="horizon-td text-left px-4 py-2" 
                         v-for="(item, indexItem) in row" :key="indexItem"
                         > 
@@ -30,13 +35,48 @@
 </template>
 
 <script setup>
+import { ChevronDownIcon } from '@heroicons/vue/24/solid'
+import { ChevronUpIcon } from '@heroicons/vue/24/solid'
+import { ref } from 'vue';
 
 const props = defineProps({
     data: {
         type: Array,
         default: () => []
     },
-    labels: Array
-
+    labels: Array,
+    sortable: Array
 })
+
+const sortKey = ref(null)
+const sortOrder = ref('asc')
+const sortedData = ref([...props.data])
+
+const sortLabel = (label) => {
+    const key = getKeyFromLabel(label)
+
+    if (sortKey.value === key) {
+        sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
+    } else {
+        sortKey.value = key;
+        sortOrder.value = 'asc';
+    }
+    
+    sortedData.value.sort((a, b) => {
+        const comparison = a[key] > b[key] ? 1 : -1;
+        return sortOrder.value === 'asc' ? comparison : -comparison;
+    });
+    console.log(props.data)
+}
+
+const getKeyFromLabel = (label) => {
+    if (props.labels && props.data.length > 0) {
+        return Object.keys(props.data[0])[props.labels.indexOf(label)]
+    }
+    return label
+};
+
+const hasSort = (label) => {
+    return props.sortable.includes(getKeyFromLabel(label))
+}
 </script>
