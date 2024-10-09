@@ -6,9 +6,10 @@
             <thead class="horizon-thead">
                 <tr class="horizon-tr bg-slate-200">
                     <th 
-                        class="horizon-th text-left px-4 py-2" 
                         v-for="(label, indexLabel) in (labels || Object.keys(props.data[0]))"
                         :key="indexLabel"
+                        class="horizon-th text-left px-4 py-2"
+                        :class="{'cursor-pointer': hasSort(label)}"
                         @click="sortLabel(label)"
                         >
                         <div class="flex gap-2 items-center">
@@ -62,7 +63,7 @@ const sortedData = computed(() => {
     return [...props.data].sort((a, b) => {
         const aVal = a[sortKey.value] ?? ''; // Gérer null/undefined
         const bVal = b[sortKey.value] ?? '';
-        const comparison = aVal > bVal ? 1 : -1;
+        const comparison = typeof aVal === 'string' ? aVal.localeCompare(bVal) : aVal - bVal;
         return sortableData[sortKey.value] === 'asc' ? comparison : -comparison;
     });
 })
@@ -85,7 +86,7 @@ const getKeyFromLabel = (label) => {
     return label
 };
 
-const hasSort = (label) => {
-    return props.sortable.includes(getKeyFromLabel(label))
-}
+const hasSort = computed(() => {
+    return (label) => props.sortable.includes(getKeyFromLabel(label))
+})
 </script>
