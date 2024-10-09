@@ -13,8 +13,8 @@
                         >
                         <div class="flex gap-2 items-center">
                             {{ label }}
-                            <ChevronDownIcon v-if="hasSort(label) && sortableData[getKeyFromLabel(label)] == 'asc'" class="size-4"></ChevronDownIcon>
-                            <ChevronUpIcon v-if="hasSort(label) && sortableData[getKeyFromLabel(label)] == 'desc'" class="size-4"></ChevronUpIcon>
+                            <ChevronDownIcon v-if="hasSort(label) && (sortableData[getKeyFromLabel(label)] == 'asc' || sortableData[getKeyFromLabel(label)] == null)" class="size-4"></ChevronDownIcon>
+                            <ChevronUpIcon v-if="hasSort(label) && (sortableData[getKeyFromLabel(label)] == 'desc')" class="size-4"></ChevronUpIcon>
                         </div>
                     </th>
                 </tr>
@@ -37,7 +37,7 @@
 <script setup>
 import { ChevronDownIcon } from '@heroicons/vue/24/solid'
 import { ChevronUpIcon } from '@heroicons/vue/24/solid'
-import { ref } from 'vue';
+import { computed, ref, reactive } from 'vue';
 
 const props = defineProps({
     data: {
@@ -48,20 +48,28 @@ const props = defineProps({
     sortable: Array
 })
 
-const sortedData = ref([...props.data])
+const sortKey = ref(null)
 
-const sortableData = props.sortable.reduce((obj, value) => {
-    obj[value] = 'asc';
-    return obj;
-}, {})
+const sortableData = reactive(
+    props.sortable.reduce((obj, value) => {
+        obj[value] = null
+        return obj;
+    }, {}))
+
+const sortedData = computed(() => {
+    return [...props.data].sort((a, b) => {
+        const comparison = a[sortKey.value] > b[sortKey.value] ? 1 : -1;
+        return sortableData[sortKey.value] === 'asc' ? comparison : -comparison;
+    });
+})
+
 
 const sortLabel = (label) => {
     const key = getKeyFromLabel(label)
+    
+    if(!sortableData.hasOwnProperty(key)) return 
 
-    sortedData.value.sort((a, b) => {
-        const comparison = a[key] > b[key] ? 1 : -1;
-        return sortableData[key] === 'asc' ? comparison : -comparison;
-    });
+    sortKey.value = key
 
     sortableData[key] = sortableData[key] == 'asc' ? 'desc' : 'asc'
 }
