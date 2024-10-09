@@ -13,7 +13,7 @@
                         >
                         <div class="flex gap-2 items-center">
                             {{ label }}
-                            <ChevronDownIcon v-if="hasSort(label) && (sortableData[getKeyFromLabel(label)] == 'asc' || sortableData[getKeyFromLabel(label)] == null)" class="size-4"></ChevronDownIcon>
+                            <ChevronDownIcon v-if="hasSort(label) && sortableData[getKeyFromLabel(label)] == 'asc'" class="size-4"></ChevronDownIcon>
                             <ChevronUpIcon v-if="hasSort(label) && sortableData[getKeyFromLabel(label)] == 'desc'" class="size-4"></ChevronUpIcon>
                         </div>
                     </th>
@@ -51,19 +51,19 @@ const props = defineProps({
 const sortedData = ref([...props.data])
 
 const sortableData = props.sortable.reduce((obj, value) => {
-    obj[value] = null;
+    obj[value] = 'asc';
     return obj;
 }, {})
 
 const sortLabel = (label) => {
     const key = getKeyFromLabel(label)
 
-    sortableData[key] = sortableData[key] == 'asc' ? 'desc' : 'asc'
-    
     sortedData.value.sort((a, b) => {
         const comparison = a[key] > b[key] ? 1 : -1;
         return sortableData[key] === 'asc' ? comparison : -comparison;
     });
+
+    sortableData[key] = sortableData[key] == 'asc' ? 'desc' : 'asc'
 }
 
 const getKeyFromLabel = (label) => {
