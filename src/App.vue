@@ -3,7 +3,7 @@
 
   <div class="p-8">
 
-    <Table :data="data" :labels="labels" :sortable="['name', 'active']"></Table>
+    <Table :data="data" :labels="labels" :sortable="['name', 'active']" :search="['name', 'age']"></Table>
   </div>
 </template>
 
@@ -14,7 +14,7 @@ const data = [
   {
     name: 'mth',
     lastName: 'dht',
-    age: 35,
+    age: '24',
     active: true
   },
   {
@@ -25,7 +25,7 @@ const data = [
   },
   {
     name: 'eruiruei',
-    lastName: 'vbdfvkdk',
+    lastName: 'vbdfvkdkm',
     age: 35,
     active: false
   },

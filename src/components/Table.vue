@@ -1,7 +1,7 @@
 <template>
     <div class="horizon-table-wrapper">
+        <input type="text" v-model="searchTerm" v-if="search" class="border" placeholder="search...">
         <p v-if="props.data.length === 0">no data available</p>
-
         <table v-else class="horizon-table w-full">
             <thead class="horizon-thead">
                 <tr class="horizon-tr bg-slate-200">
@@ -46,21 +46,40 @@ const props = defineProps({
         default: () => []
     },
     labels: Array,
-    sortable: Array
+    sortable: Array,
+    search: Array
 })
 
 const sortKey = ref(null)
+const searchTerm = ref('')
+
+const filteredData = computed(() => {
+    if (!searchTerm.value) {
+        return props.data; // Pas de recherche, retourner toutes les données
+    }
+
+    return props.data.filter(row => {
+        return props.search.some(key => {
+            const cellValue = String(row[key] || '').toLowerCase();
+            return cellValue.includes(searchTerm.value.toLowerCase());
+        });
+    });
+})
 
 const sortableData = reactive(
     props.sortable.reduce((obj, value) => {
         obj[value] = null
         return obj;
-    }, {}))
+    }, {})
+)
 
 const sortedData = computed(() => {
-    if (!sortKey.value) return props.data;
+    console.log(filteredData.value)
+    const dataToSort = [...filteredData.value];
 
-    return [...props.data].sort((a, b) => {
+    if (!sortKey.value) return dataToSort;
+
+    return dataToSort.sort((a, b) => {
         const aVal = a[sortKey.value] ?? ''; // Gérer null/undefined
         const bVal = b[sortKey.value] ?? '';
         const comparison = typeof aVal === 'string' ? aVal.localeCompare(bVal) : aVal - bVal;
