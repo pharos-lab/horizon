@@ -57,8 +57,12 @@ const sortableData = reactive(
     }, {}))
 
 const sortedData = computed(() => {
+    if (!sortKey.value) return props.data;
+
     return [...props.data].sort((a, b) => {
-        const comparison = a[sortKey.value] > b[sortKey.value] ? 1 : -1;
+        const aVal = a[sortKey.value] ?? ''; // Gérer null/undefined
+        const bVal = b[sortKey.value] ?? '';
+        const comparison = aVal > bVal ? 1 : -1;
         return sortableData[sortKey.value] === 'asc' ? comparison : -comparison;
     });
 })
@@ -66,7 +70,7 @@ const sortedData = computed(() => {
 
 const sortLabel = (label) => {
     const key = getKeyFromLabel(label)
-    
+
     if(!sortableData.hasOwnProperty(key)) return 
 
     sortKey.value = key
