@@ -48,7 +48,7 @@ import { ChevronUpIcon } from '@heroicons/vue/24/solid'
 import { computed, ref, reactive, onMounted } from 'vue';
 import Filters from './Filters.vue'
 import Badges from './Badges.vue'
-import { initializeFilters, checkFilters, sortData, compareValues } from './utils.js'
+import { initializeFilters, checkFilters, sortData } from './utils.js'
 
 const props = defineProps({
     data: {
@@ -112,25 +112,7 @@ const searchedData = computed(() => {
 
 const sortedData = computed(() => {
     const dataToSort = [...searchedData.value];
-
-    if (!sortKey.value) return dataToSort;
-
-    return dataToSort.sort((a, b) => {
-        const aVal = a[sortKey.value] ?? ''; // Gérer null/undefined
-        const bVal = b[sortKey.value] ?? '';
-
-        if (typeof aVal === 'number' && typeof bVal === 'number') {
-            return sortableData[sortKey.value] === 'asc' ? aVal - bVal : bVal - aVal;
-        }
-
-        // Tri des dates
-        if (aVal instanceof Date && bVal instanceof Date) {
-            return sortableData[sortKey.value] === 'asc' ? aVal - bVal : bVal - aVal;
-        }
-
-        const comparison = typeof aVal === 'string' ? aVal.localeCompare(bVal) : aVal - bVal;
-        return sortableData[sortKey.value] === 'asc' ? comparison : -comparison;
-    });
+    return sortData(dataToSort, sortKey.value);
 })
 
 
