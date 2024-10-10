@@ -30,11 +30,16 @@
 
 
             <tbody class="horizon-tbody">
-                <tr class="horizon-tr" v-for="(row, indexRow) in sortedData" :key="indexRow">
+                <tr class="horizon-tr divide-x" v-for="(row, indexRow) in sortedData" :key="indexRow">
                     <td class="horizon-td text-left px-4 py-2" 
                         v-for="(item, indexItem) in row" :key="indexItem"
                         > 
-                        {{ item }}
+                        <template v-if="getColumnType(indexItem) === 'icon'">
+                            <component :is="Heroicons[getIconFromColumn(indexItem, item) + 'Icon']" class="size-5"/>
+                        </template>
+                        <template v-else>
+                            {{ item }}
+                        </template>
                     </td>
                 </tr>
             </tbody>
@@ -45,6 +50,7 @@
 <script setup>
 import { ChevronDownIcon } from '@heroicons/vue/24/solid'
 import { ChevronUpIcon } from '@heroicons/vue/24/solid'
+import * as Heroicons  from '@heroicons/vue/24/outline'
 import { computed, ref, reactive, onMounted } from 'vue';
 import Filters from './Filters.vue'
 import Badges from './Badges.vue'
@@ -61,7 +67,11 @@ const props = defineProps({
     filters: {
         type: Array,
         default: () => []
-    }
+    },
+    columnTypes: {
+        type: Array,
+        default: () => [] // Ex: [{ label: "Status", type: "icon", icon: "CheckIcon" }]
+    },
 })
 
 const sortKey = ref(null)
@@ -153,10 +163,16 @@ const getKeyFromLabel = (label) => {
     return label
 };
 
-const getFilterLabel = (column) => {
-    const filter = props.filters.find(f => f.column === column);
-    return filter ? filter.label : column;
+const getColumnType = (column) => {
+    const columnInfo = props.columnTypes.find(type => type.column === column);
+    return columnInfo ? columnInfo.type : 'text'; // Retourne 'text' par défaut si aucun type n'est spécifié
 };
+
+const getIconFromColumn = (column, value) => {
+    console.log(Heroicons['CheckCircleIcon'])
+    return props.columnTypes.find(type => type.column === column).icons[value]
+}
+
 
 const hasSort = computed(() => {
     return (label) => props.sortable.includes(getKeyFromLabel(label))

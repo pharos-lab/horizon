@@ -3,7 +3,7 @@
 
   <div class="p-8">
 
-    <Table :data="data" :labels="labels" :sortable="['name', 'active']" :search="['name', 'age']" :filters="filters"></Table>
+    <Table :data="data" :labels="labels" :sortable="['name', 'active']" :search="['name', 'age']" :filters="filters" :columnTypes="columnTypes"></Table>
   </div>
 </template>
 
@@ -69,6 +69,17 @@ const filters= [
     label: 'Age',
     column: 'age',
     options: [24, 35] // Options possibles pour le select
+  }
+]
+
+const columnTypes = [
+  {
+    column: 'active',
+    type: 'icon',
+    icons: {
+      true: 'CheckCircle',
+      false: 'XCircle'
+    }
   }
 ]
 </script>
