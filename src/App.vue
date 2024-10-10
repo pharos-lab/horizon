@@ -3,7 +3,7 @@
 
   <div class="p-8">
 
-    <Table :data="data" :labels="labels" :sortable="['name', 'active']" :search="['name', 'age']"></Table>
+    <Table :data="data" :labels="labels" :sortable="['name', 'active']" :search="['name', 'age']" :filters="filters"></Table>
   </div>
 </template>
 
@@ -20,7 +20,7 @@ const data = [
   {
     name: 'mickey',
     lastName: 'edjdkje',
-    age: 35,
+    age: '35',
     active: false
   },
   {
@@ -56,6 +56,21 @@ const data = [
 ]
 
 const labels = ['Prénom', 'Nom', 'Age', 'Actif']
+
+const filters= [
+  {
+    type: 'checkbox',
+    label: 'actif', // Nom du filtre
+    column: 'active', // Colonne à filtrer
+    value: true // Valeur à filtrer
+  },
+  {
+    type: 'select',
+    label: 'Age',
+    column: 'age',
+    options: ['24', '35', '12'] // Options possibles pour le select
+  }
+]
 </script>
 
 

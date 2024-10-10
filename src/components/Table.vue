@@ -1,6 +1,28 @@
 <template>
     <div class="horizon-table-wrapper">
-        <input type="text" v-model="searchTerm" v-if="search" class="border" placeholder="search...">
+        <div class="options ">
+            <input type="text" v-model="searchTerm" v-if="search" class="border" placeholder="search...">
+
+            <template v-for="filter in props.filters" :key="filter.label">
+                <div class="filter" v-if="filter.type === 'checkbox'">
+                    <label>
+                        <input type="checkbox" v-model="activeFilters.checkbox[filter.column]" :value="filter.value">
+                        {{ filter.label }}
+                    </label>
+                </div>
+            </template>
+
+            <template v-for="filter in props.filters" :key="filter.label">
+                <div class="filter" v-if="filter.type === 'select'">
+                    <label>{{ filter.label }}</label>
+                    <select v-model="activeFilters.select[filter.column]">
+                        <option value="">All</option>
+                        <option v-for="option in filter.options" :key="option" :value="option">{{ option }}</option>
+                    </select>
+                </div>
+            </template>
+            
+        </div>
         <p v-if="props.data.length === 0">no data available</p>
         <table v-else class="horizon-table w-full">
             <thead class="horizon-thead">
@@ -47,18 +69,56 @@ const props = defineProps({
     },
     labels: Array,
     sortable: Array,
-    search: Array
+    search: Array,
+    filters: {
+        type: Array,
+        default: () => []
+    }
 })
 
 const sortKey = ref(null)
 const searchTerm = ref('')
 
+const activeFilters = reactive({
+    checkbox: {},
+    select: {}
+});
+
+props.filters.forEach(filter => {
+    if (filter.type === 'checkbox') {
+        activeFilters.checkbox[filter.column] = false; // Par défaut, décoché
+    }
+    if (filter.type === 'select') {
+        activeFilters.select[filter.column] = ''; // Par défaut, aucune sélection
+    }
+});
+
 const filteredData = computed(() => {
+    return props.data.filter(row => {
+        // Vérifier les filtres à cocher
+        for (const [column, value] of Object.entries(activeFilters.checkbox)) {
+            if (value && row[column] !== value) {
+                return false; // Si la case est cochée et ne correspond pas, on exclut la ligne
+            }
+        }
+        
+        // Vérifier les filtres select
+        for (const [column, selectedValue] of Object.entries(activeFilters.select)) {
+            if (selectedValue && row[column] !== selectedValue) {
+                return false; // Si une option est sélectionnée et ne correspond pas, on exclut la ligne
+            }
+        }
+
+        return true;
+    });
+});
+
+const searchedData = computed(() => {
     if (!searchTerm.value) {
-        return props.data; // Pas de recherche, retourner toutes les données
+        return filteredData.value; // Pas de recherche, retourner toutes les données
     }
 
-    return props.data.filter(row => {
+    return filteredData.value.filter(row => {
         return props.search.some(key => {
             const cellValue = String(row[key] || '').toLowerCase();
             return cellValue.includes(searchTerm.value.toLowerCase());
@@ -74,8 +134,7 @@ const sortableData = reactive(
 )
 
 const sortedData = computed(() => {
-    console.log(filteredData.value)
-    const dataToSort = [...filteredData.value];
+    const dataToSort = [...searchedData.value];
 
     if (!sortKey.value) return dataToSort;
 
