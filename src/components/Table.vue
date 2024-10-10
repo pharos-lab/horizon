@@ -1,28 +1,30 @@
 <template>
     <div class="horizon-table-wrapper">
-        <div class="options ">
-            <input type="text" v-model="searchTerm" v-if="search" class="border" placeholder="search...">
+        <div class="horizon-options ">
+            <input type="text" v-model="searchTerm" v-if="search" class="horizon-search border" placeholder="search...">
 
-            <template v-for="filter in props.filters" :key="filter.label">
-                <div class="filter" v-if="filter.type === 'checkbox'">
-                    <label>
-                        <input type="checkbox" v-model="activeFilters.checkbox[filter.column]" :value="filter.value">
-                        {{ filter.label }}
-                    </label>
-                </div>
-            </template>
+            <div class="horizon-filters">
+                <template v-for="filter in props.filters" :key="filter.label">
+                    <div class="horizon-filter-checkbox" v-if="filter.type === 'checkbox'">
+                        <label>
+                            <input type="checkbox" v-model="activeFilters.checkbox[filter.column]" :value="filter.value">
+                            {{ filter.label }}
+                        </label>
+                    </div>
 
-            <template v-for="filter in props.filters" :key="filter.label">
-                <div class="filter" v-if="filter.type === 'select'">
-                    <label>{{ filter.label }}</label>
-                    <select v-model="activeFilters.select[filter.column]">
-                        <option value="">All</option>
-                        <option v-for="option in filter.options" :key="option" :value="option">{{ option }}</option>
-                    </select>
-                </div>
-            </template>
-            
+                    <div class="horizon-filter-select" v-if="filter.type === 'select'">
+                        <label>{{ filter.label }}</label>
+                        <select v-model="activeFilters.select[filter.column]">
+                            <option value="">All</option>
+                            <option v-for="option in filter.options" :key="option" :value="option">{{ option }}</option>
+                        </select>
+                    </div>
+                </template>
+
+                <button @click="resetFilters">Reset Filters</button>
+            </div>
         </div>
+
         <p v-if="props.data.length === 0">no data available</p>
         <table v-else class="horizon-table w-full">
             <thead class="horizon-thead">
@@ -156,6 +158,18 @@ const sortLabel = (label) => {
 
     sortableData[key] = sortableData[key] == 'asc' ? 'desc' : 'asc'
 }
+
+const resetFilters = () => {
+    // Réinitialiser les filtres
+    Object.keys(activeFilters.checkbox).forEach(key => {
+        activeFilters.checkbox[key] = false;
+    });
+    
+    Object.keys(activeFilters.select).forEach(key => {
+        activeFilters.select[key] = '';
+    });
+    //searchTerm.value = ''; // Réinitialiser le champ de recherche
+};
 
 const getKeyFromLabel = (label) => {
     if (props.labels && props.data.length > 0) {
