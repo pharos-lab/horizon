@@ -68,7 +68,7 @@ const filters= [
     type: 'select',
     label: 'Age',
     column: 'age',
-    options: ['24', '35', '12'] // Options possibles pour le select
+    options: [24, 35] // Options possibles pour le select
   }
 ]
 </script>

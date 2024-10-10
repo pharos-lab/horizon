@@ -23,6 +23,23 @@
 
                 <button @click="resetFilters">Reset Filters</button>
             </div>
+
+            <!-- Badges pour les filtres actifs -->
+            <div class="active-filters mb-4">
+                <template v-for="(value, key) in activeFilters.select">
+                    <span v-if="value" :key="key" class="badge">
+                        {{ getFilterLabel(key) }} {{ value }}
+                        <button @click="clearSelectFilter(key)">x</button>
+                    </span>
+                </template>
+                
+                <template v-for="(value, key) in activeFilters.checkbox">
+                    <span v-if="value" :key="key" class="badge">
+                        {{ getFilterLabel(key) }}
+                        <button @click="clearCheckboxFilter(key)">x</button>
+                    </span>
+                </template>
+            </div>
         </div>
 
         <p v-if="props.data.length === 0">no data available</p>
@@ -95,6 +112,7 @@ onMounted(() => {
             activeFilters.select[filter.column] = ''; // Par défaut, aucune sélection
         }
     });
+    
 })
 
 const sortableData = reactive(
@@ -154,7 +172,7 @@ const sortedData = computed(() => {
         if (aVal instanceof Date && bVal instanceof Date) {
             return sortableData[sortKey.value] === 'asc' ? aVal - bVal : bVal - aVal;
         }
-        
+
         const comparison = typeof aVal === 'string' ? aVal.localeCompare(bVal) : aVal - bVal;
         return sortableData[sortKey.value] === 'asc' ? comparison : -comparison;
     });
@@ -183,11 +201,24 @@ const resetFilters = () => {
     //searchTerm.value = ''; // Réinitialiser le champ de recherche
 };
 
+const clearSelectFilter = (key) => {
+    activeFilters.select[key] = ''; // Réinitialiser le filtre select
+};
+
+const clearCheckboxFilter = (key) => {
+    activeFilters.checkbox[key] = false; // Décocher la checkbox
+};
+
 const getKeyFromLabel = (label) => {
     if (props.labels && props.data.length > 0) {
         return Object.keys(props.data[0])[props.labels.indexOf(label)]
     }
     return label
+};
+
+const getFilterLabel = (column) => {
+    const filter = props.filters.find(f => f.column === column);
+    return filter ? filter.label : column;
 };
 
 const hasSort = computed(() => {
