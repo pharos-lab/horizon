@@ -62,7 +62,7 @@
 <script setup>
 import { ChevronDownIcon } from '@heroicons/vue/24/solid'
 import { ChevronUpIcon } from '@heroicons/vue/24/solid'
-import { computed, ref, reactive } from 'vue';
+import { computed, ref, reactive, onMounted } from 'vue';
 
 const props = defineProps({
     data: {
@@ -86,14 +86,23 @@ const activeFilters = reactive({
     select: {}
 });
 
-props.filters.forEach(filter => {
-    if (filter.type === 'checkbox') {
-        activeFilters.checkbox[filter.column] = false; // Par défaut, décoché
-    }
-    if (filter.type === 'select') {
-        activeFilters.select[filter.column] = ''; // Par défaut, aucune sélection
-    }
-});
+onMounted(() => {
+    props.filters.forEach(filter => {
+        if (filter.type === 'checkbox') {
+            activeFilters.checkbox[filter.column] = false; // Par défaut, décoché
+        }
+        if (filter.type === 'select') {
+            activeFilters.select[filter.column] = ''; // Par défaut, aucune sélection
+        }
+    });
+})
+
+const sortableData = reactive(
+    props.sortable.reduce((obj, value) => {
+        obj[value] = null
+        return obj;
+    }, {})
+)
 
 const filteredData = computed(() => {
     return props.data.filter(row => {
@@ -128,13 +137,6 @@ const searchedData = computed(() => {
     });
 })
 
-const sortableData = reactive(
-    props.sortable.reduce((obj, value) => {
-        obj[value] = null
-        return obj;
-    }, {})
-)
-
 const sortedData = computed(() => {
     const dataToSort = [...searchedData.value];
 
@@ -143,6 +145,16 @@ const sortedData = computed(() => {
     return dataToSort.sort((a, b) => {
         const aVal = a[sortKey.value] ?? ''; // Gérer null/undefined
         const bVal = b[sortKey.value] ?? '';
+
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+            return sortableData[sortKey.value] === 'asc' ? aVal - bVal : bVal - aVal;
+        }
+
+        // Tri des dates
+        if (aVal instanceof Date && bVal instanceof Date) {
+            return sortableData[sortKey.value] === 'asc' ? aVal - bVal : bVal - aVal;
+        }
+        
         const comparison = typeof aVal === 'string' ? aVal.localeCompare(bVal) : aVal - bVal;
         return sortableData[sortKey.value] === 'asc' ? comparison : -comparison;
     });
@@ -164,7 +176,7 @@ const resetFilters = () => {
     Object.keys(activeFilters.checkbox).forEach(key => {
         activeFilters.checkbox[key] = false;
     });
-    
+
     Object.keys(activeFilters.select).forEach(key => {
         activeFilters.select[key] = '';
     });
