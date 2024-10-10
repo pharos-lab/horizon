@@ -3,43 +3,9 @@
         <div class="horizon-options ">
             <input type="text" v-model="searchTerm" v-if="search" class="horizon-search border" placeholder="search...">
 
-            <div class="horizon-filters">
-                <template v-for="filter in props.filters" :key="filter.label">
-                    <div class="horizon-filter-checkbox" v-if="filter.type === 'checkbox'">
-                        <label>
-                            <input type="checkbox" v-model="activeFilters.checkbox[filter.column]" :value="filter.value">
-                            {{ filter.label }}
-                        </label>
-                    </div>
+            <Filters :filters="props.filters" :activeFilters="activeFilters" @reset-filters="resetFilters"/>
 
-                    <div class="horizon-filter-select" v-if="filter.type === 'select'">
-                        <label>{{ filter.label }}</label>
-                        <select v-model="activeFilters.select[filter.column]">
-                            <option value="">All</option>
-                            <option v-for="option in filter.options" :key="option" :value="option">{{ option }}</option>
-                        </select>
-                    </div>
-                </template>
-
-                <button @click="resetFilters">Reset Filters</button>
-            </div>
-
-            <!-- Badges pour les filtres actifs -->
-            <div class="active-filters mb-4">
-                <template v-for="(value, key) in activeFilters.select">
-                    <span v-if="value" :key="key" class="badge">
-                        {{ getFilterLabel(key) }} {{ value }}
-                        <button @click="clearSelectFilter(key)">x</button>
-                    </span>
-                </template>
-                
-                <template v-for="(value, key) in activeFilters.checkbox">
-                    <span v-if="value" :key="key" class="badge">
-                        {{ getFilterLabel(key) }}
-                        <button @click="clearCheckboxFilter(key)">x</button>
-                    </span>
-                </template>
-            </div>
+            <Badges :filters="props.filters" :activeFilters="activeFilters" @clear-select-filter="clearSelectFilter" @clear-checkbox-filter="clearCheckboxFilter"/>
         </div>
 
         <p v-if="props.data.length === 0">no data available</p>
@@ -80,6 +46,9 @@
 import { ChevronDownIcon } from '@heroicons/vue/24/solid'
 import { ChevronUpIcon } from '@heroicons/vue/24/solid'
 import { computed, ref, reactive, onMounted } from 'vue';
+import Filters from './Filters.vue'
+import Badges from './Badges.vue'
+import { initializeFilters, checkFilters, sortData, compareValues } from './utils.js'
 
 const props = defineProps({
     data: {
@@ -104,6 +73,8 @@ const activeFilters = reactive({
 });
 
 onMounted(() => {
+    initializeFilters(props.filters, activeFilters);
+
     props.filters.forEach(filter => {
         if (filter.type === 'checkbox') {
             activeFilters.checkbox[filter.column] = false; // Par défaut, décoché
@@ -123,23 +94,7 @@ const sortableData = reactive(
 )
 
 const filteredData = computed(() => {
-    return props.data.filter(row => {
-        // Vérifier les filtres à cocher
-        for (const [column, value] of Object.entries(activeFilters.checkbox)) {
-            if (value && row[column] !== value) {
-                return false; // Si la case est cochée et ne correspond pas, on exclut la ligne
-            }
-        }
-        
-        // Vérifier les filtres select
-        for (const [column, selectedValue] of Object.entries(activeFilters.select)) {
-            if (selectedValue && row[column] !== selectedValue) {
-                return false; // Si une option est sélectionnée et ne correspond pas, on exclut la ligne
-            }
-        }
-
-        return true;
-    });
+    return props.data.filter(row => checkFilters(row, activeFilters));
 });
 
 const searchedData = computed(() => {
