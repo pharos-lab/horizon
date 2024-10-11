@@ -26,24 +26,22 @@ const checkFilters = (row, activeFilters) => {
     return true;
 };
 
-const sortData = (dataToSort, sortKey) => {
+const sortData = (dataToSort, sortKey, sortOrder) => {
     if (!sortKey) return dataToSort;
-
-    return dataToSort.sort((a, b) => {
+    const final = dataToSort.sort((a, b) => {
         const aVal = a[sortKey] ?? '';
         const bVal = b[sortKey] ?? '';
-        return compareValues(aVal, bVal);
+        return sortOrder === 'asc' ? compareValues(aVal, bVal) : compareValues(bVal, aVal);
     });
+    return final
 };
 
 const compareValues = (aVal, bVal) => {
-    if (typeof aVal === 'number' && typeof bVal === 'number') {
-        return aVal - bVal;
+    if (typeof aVal === 'string' && typeof bVal === 'string') {
+        return aVal.localeCompare(bVal);
     }
-    if (aVal instanceof Date && bVal instanceof Date) {
-        return aVal - bVal;
-    }
-    return aVal.localeCompare(bVal);
+
+    return aVal - bVal;
 };
 
 export {initializeFilters, checkFilters, sortData, compareValues}

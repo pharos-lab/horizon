@@ -122,15 +122,15 @@ const searchedData = computed(() => {
 
 const sortedData = computed(() => {
     const dataToSort = [...searchedData.value];
-    return sortData(dataToSort, sortKey.value);
+    return sortData(dataToSort, sortKey.value, sortableData[sortKey.value]);
 })
 
 
 const sortLabel = (label) => {
     const key = getKeyFromLabel(label)
-
+    
     if(!sortableData.hasOwnProperty(key)) return 
-
+    
     sortKey.value = key
 
     sortableData[key] = sortableData[key] == 'asc' ? 'desc' : 'asc'
@@ -169,10 +169,8 @@ const getColumnType = (column) => {
 };
 
 const getIconFromColumn = (column, value) => {
-    console.log(Heroicons['CheckCircleIcon'])
     return props.columnTypes.find(type => type.column === column).icons[value]
 }
-
 
 const hasSort = computed(() => {
     return (label) => props.sortable.includes(getKeyFromLabel(label))
