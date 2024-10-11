@@ -38,7 +38,7 @@
                         :class="getColorFromColumn(indexItem, item)"
                         > 
                         <template v-if="getColumnType(indexItem) === 'icon'">
-                            <component :is="Heroicons[getIconFromColumn(indexItem, item) + 'Icon']" class="size-5"/>
+                            <component :is="Heroicons[getIconFromColumn(indexItem, item) + 'Icon']" class="horizon-td-icon size-5"/>
                         </template>
 
                         <template v-else-if="getColumnType(indexItem) === 'image'">
@@ -47,6 +47,19 @@
                                 :alt="item" 
                                 :style="getImageSize(indexItem)" 
                                 :class="getImageShape(indexItem)">
+                        </template>
+
+                        <template v-else-if="getColumnType(indexItem) === 'select'">
+                            <select class="horizon-td-select">
+                                <option 
+                                    v-for="option in getSelectOptions(indexItem)" 
+                                    :key="option.value" 
+                                    :value="option.value"
+                                    :selected="option.value == item"
+                                >
+                                    {{ option.label }}
+                                </option>
+                            </select>
                         </template>
                         
                         <template v-else>
@@ -88,6 +101,7 @@ const props = defineProps({
 
 const sortKey = ref(null)
 const searchTerm = ref('')
+const columnSelect = ref()
 
 const activeFilters = reactive({
     checkbox: {},
@@ -228,6 +242,12 @@ const getImageShape = (column) => {
         default:
             return ''
     }
+}
+
+const getSelectOptions = (column) => {
+    console.log()
+    const columnInfo = props.columnTypes.find(type => type.column === column);
+    return columnInfo ? columnInfo.options : [];
 }
 
 const hasSort = computed(() => {

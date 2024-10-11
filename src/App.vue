@@ -16,53 +16,60 @@ const data = [
     lastName: 'dht',
     age: '24',
     imgS: '/pathok/to/img.png', 
-    active: true
+    active: true,
+    status: 'success'
   },
   {
     name: 'mickey',
     lastName: 'edjdkje',
     age: '35',
     imgS: '/path/to/img.png', 
-    active: false
+    active: false,
+    status: 'fail'
   },
   {
     name: 'eruiruei',
     lastName: 'vbdfvkdkm',
     age: 35,
     imgS: '/path/to/img.png', 
-    active: false
+    active: false,
+    status: 'success'
   },
   {
     name: 'paozaka',
     lastName: 'kkqsjazi',
     age: 35,
     imgS: '/path/to/img.png', 
-    active: true
+    active: true,
+    status: 'pending'
   },
   {
     name: 'lsdklz',
     lastName: 'azlieo',
     age: 35,
     imgS: '/path/to/img.png', 
-    active: false
+    active: false,
+    status: 'fail'
   },
   {
     name: 'mth',
     lastName: 'dht',
     age: 35,
     imgS: '/path/to/img.png', 
-    active: true
+    active: true,
+    status: 'success'
   },
   {
     name: 'mth',
     lastName: 'dht',
     age: 35,
     imgS: '/path/to/img.png', 
-    active: true
+    active: true,
+    status: 'success'
   }
 ]
 
-const labels = ['Prénom', 'Nom', 'Age', 'avatar', 'Actif']
+const labels = ['Prénom', 'Nom', 'Age', 'avatar', 'Actif', 'status']
 
 const filters= [
   {
@@ -106,7 +113,16 @@ const columnTypes = [
   {
     column: 'name',
     colors: 'text-sky-500'
-  }
+  },
+  {
+    column: 'status', 
+    type: 'select',  
+    options: [       
+        { value: 'success', label: 'Success' },
+        { value: 'fail', label: 'Fail' },
+        { value: 'pending', label: 'Pending' }
+    ]
+}
 ]
 </script>
 
