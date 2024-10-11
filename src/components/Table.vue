@@ -178,9 +178,10 @@ const getIconFromColumn = (column, value) => {
 const getColorFromColumn = (column, value) => {
     // Cherche dans 'columnTypes' l'entrée pour cette colonne
     const columnInfo = props.columnTypes.find(type => type.column === column);
+    console.log(columnInfo)
     
     // Si une couleur est définie pour la valeur de la cellule, la renvoyer, sinon utiliser une couleur par défaut
-    return columnInfo ? columnInfo.colors?.[value] : '';
+    return columnInfo ? columnInfo.colors?.[value] || columnInfo.colors : '';
 };
 
 const hasSort = computed(() => {

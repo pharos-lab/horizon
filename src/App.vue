@@ -84,6 +84,10 @@ const columnTypes = [
       true: 'text-emerald-500',
       false: 'text-red-500'
     }
+  },
+  {
+    column: 'name',
+    colors: 'text-sky-500'
   }
 ]
 </script>
