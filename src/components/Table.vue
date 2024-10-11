@@ -40,7 +40,7 @@
                         </template>
 
                         <template v-else-if="getColumnType(indexItem) === 'image'">
-                            <img :src="getImageUrl(indexItem, item)" class="horizon-td-image size-5" :alt="item" :style="getImageSize(indexItem)">
+                            <img :src="getImageUrl(indexItem, item)" class="horizon-td-image size-5" :alt="item" :style="getImageSize(indexItem)" :class="getImageShape(indexItem)">
                         </template>
                         
                         <template v-else>
@@ -131,11 +131,6 @@ const sortedData = computed(() => {
     return sortData(dataToSort, sortKey.value, sortableData[sortKey.value]);
 })
 
-const imageStyle = computed(() => {
-
-})
-
-
 const sortLabel = (label) => {
     const key = getKeyFromLabel(label)
     
@@ -204,6 +199,7 @@ const getImageSize = (column) => {
     }
     
 }
+
 const getImageUrl = (column, value) => {
   const columnInfo = props.columnTypes.find(type => type.column === column);
 
@@ -212,6 +208,18 @@ const getImageUrl = (column, value) => {
   const basePath = columnInfo.basePath || ''; // Utiliser basePath s'il est défini
 
   return basePath + value;
+}
+
+const getImageShape = (column) => {
+    const columnInfo = props.columnTypes.find(type => type.column === column);
+
+    switch (columnInfo.shape) {
+        case 'circle':
+            return 'rounded-full'
+            break;
+        default:
+            return ''
+    }
 }
 
 const hasSort = computed(() => {

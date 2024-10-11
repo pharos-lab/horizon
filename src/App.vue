@@ -15,7 +15,7 @@ const data = [
     name: 'mth',
     lastName: 'dht',
     age: '24',
-    imgS: '/path/to/img.png', 
+    imgS: '/pathok/to/img.png', 
     active: true
   },
   {
@@ -100,7 +100,8 @@ const columnTypes = [
       width: '100px',
       height: '50px',
       ratio: '16/9'
-    }
+    },
+    shape: 'circle'
   },
   {
     column: 'name',
