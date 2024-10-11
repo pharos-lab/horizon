@@ -40,7 +40,7 @@
                         </template>
 
                         <template v-else-if="getColumnType(indexItem) === 'image'">
-                            <img :src="getImageUrl(indexItem, item)" class="size-5" :alt="item">
+                            <img :src="getImageUrl(indexItem, item)" class="horizon-td-image size-5" :alt="item" :style="getImageSize(indexItem)">
                         </template>
                         
                         <template v-else>
@@ -131,6 +131,10 @@ const sortedData = computed(() => {
     return sortData(dataToSort, sortKey.value, sortableData[sortKey.value]);
 })
 
+const imageStyle = computed(() => {
+
+})
+
 
 const sortLabel = (label) => {
     const key = getKeyFromLabel(label)
@@ -188,6 +192,18 @@ const getColorFromColumn = (column, value) => {
     return columnInfo ? columnInfo.colors?.[value] || columnInfo.colors : '';
 };
 
+const getImageSize = (column) => {
+    const columnInfo = props.columnTypes.find(type => type.column === column);
+
+    if (!columnInfo.size) return;
+
+    return {
+        width: columnInfo.size.width || 'auto',
+        height: columnInfo.size.height || 'auto',
+        aspectRatio: columnInfo.size.ratio || ''
+    }
+    
+}
 const getImageUrl = (column, value) => {
   const columnInfo = props.columnTypes.find(type => type.column === column);
 
@@ -202,3 +218,6 @@ const hasSort = computed(() => {
     return (label) => props.sortable.includes(getKeyFromLabel(label))
 })
 </script>
+
+<style scoped>
+</style>

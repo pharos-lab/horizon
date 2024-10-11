@@ -96,6 +96,11 @@ const columnTypes = [
     column: 'imgS',
     type: 'image',
     basePath: '/uploads/',
+    size: {
+      width: '100px',
+      height: '50px',
+      ratio: '16/9'
+    }
   },
   {
     column: 'name',
