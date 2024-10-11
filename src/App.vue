@@ -15,47 +15,54 @@ const data = [
     name: 'mth',
     lastName: 'dht',
     age: '24',
+    imgS: '/path/to/img.png', 
     active: true
   },
   {
     name: 'mickey',
     lastName: 'edjdkje',
     age: '35',
+    imgS: '/path/to/img.png', 
     active: false
   },
   {
     name: 'eruiruei',
     lastName: 'vbdfvkdkm',
     age: 35,
+    imgS: '/path/to/img.png', 
     active: false
   },
   {
     name: 'paozaka',
     lastName: 'kkqsjazi',
     age: 35,
+    imgS: '/path/to/img.png', 
     active: true
   },
   {
     name: 'lsdklz',
     lastName: 'azlieo',
     age: 35,
+    imgS: '/path/to/img.png', 
     active: false
   },
   {
     name: 'mth',
     lastName: 'dht',
     age: 35,
+    imgS: '/path/to/img.png', 
     active: true
   },
   {
     name: 'mth',
     lastName: 'dht',
     age: 35,
+    imgS: '/path/to/img.png', 
     active: true
   }
 ]
 
-const labels = ['Prénom', 'Nom', 'Age', 'Actif']
+const labels = ['Prénom', 'Nom', 'Age', 'avatar', 'Actif']
 
 const filters= [
   {
@@ -84,6 +91,11 @@ const columnTypes = [
       true: 'text-emerald-500',
       false: 'text-red-500'
     }
+  },
+  {
+    column: 'imgS',
+    type: 'image',
+    basePath: '/uploads/',
   },
   {
     column: 'name',

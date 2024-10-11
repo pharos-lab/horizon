@@ -38,6 +38,11 @@
                         <template v-if="getColumnType(indexItem) === 'icon'">
                             <component :is="Heroicons[getIconFromColumn(indexItem, item) + 'Icon']" class="size-5"/>
                         </template>
+
+                        <template v-else-if="getColumnType(indexItem) === 'image'">
+                            <img :src="getImageUrl(indexItem, item)" class="size-5" :alt="item">
+                        </template>
+                        
                         <template v-else>
                             {{ item }}
                         </template>
@@ -178,11 +183,20 @@ const getIconFromColumn = (column, value) => {
 const getColorFromColumn = (column, value) => {
     // Cherche dans 'columnTypes' l'entrée pour cette colonne
     const columnInfo = props.columnTypes.find(type => type.column === column);
-    console.log(columnInfo)
     
     // Si une couleur est définie pour la valeur de la cellule, la renvoyer, sinon utiliser une couleur par défaut
     return columnInfo ? columnInfo.colors?.[value] || columnInfo.colors : '';
 };
+
+const getImageUrl = (column, value) => {
+  const columnInfo = props.columnTypes.find(type => type.column === column);
+
+  if (!columnInfo || columnInfo.type !== 'image') return '';
+
+  const basePath = columnInfo.basePath || ''; // Utiliser basePath s'il est défini
+
+  return basePath + value;
+}
 
 const hasSort = computed(() => {
     return (label) => props.sortable.includes(getKeyFromLabel(label))
