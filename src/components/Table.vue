@@ -21,8 +21,10 @@
                         >
                         <div class="flex gap-2 items-center">
                             {{ label }}
-                            <ChevronDownIcon v-if="hasSort(label) && (sortableData[getKeyFromLabel(label)] == 'asc' || sortableData[getKeyFromLabel(label)] == null)" class="size-4"></ChevronDownIcon>
-                            <ChevronUpIcon v-if="hasSort(label) && (sortableData[getKeyFromLabel(label)] == 'desc')" class="size-4"></ChevronUpIcon>
+                            <ChevronDownIcon v-if="hasSort(label) && (sortableData[getKeyFromLabel(label)] == 'asc' || sortableData[getKeyFromLabel(label)] == null)" 
+                                class="size-4" />
+                            <ChevronUpIcon v-if="hasSort(label) && (sortableData[getKeyFromLabel(label)] == 'desc')" 
+                                class="size-4" />
                         </div>
                     </th>
                 </tr>
@@ -40,7 +42,11 @@
                         </template>
 
                         <template v-else-if="getColumnType(indexItem) === 'image'">
-                            <img :src="getImageUrl(indexItem, item)" class="horizon-td-image size-5" :alt="item" :style="getImageSize(indexItem)" :class="getImageShape(indexItem)">
+                            <img :src="getImageUrl(indexItem, item)" 
+                                class="horizon-td-image size-5" 
+                                :alt="item" 
+                                :style="getImageSize(indexItem)" 
+                                :class="getImageShape(indexItem)">
                         </template>
                         
                         <template v-else>
@@ -217,6 +223,8 @@ const getImageShape = (column) => {
         case 'circle':
             return 'rounded-full'
             break;
+        case 'square':
+            return 'aspect-square'
         default:
             return ''
     }
