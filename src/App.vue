@@ -79,6 +79,10 @@ const columnTypes = [
     icons: {
       true: 'CheckCircle',
       false: 'XCircle'
+    },
+    colors: {
+      true: 'text-emerald-500',
+      false: 'text-red-500'
     }
   }
 ]

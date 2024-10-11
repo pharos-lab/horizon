@@ -33,6 +33,7 @@
                 <tr class="horizon-tr divide-x" v-for="(row, indexRow) in sortedData" :key="indexRow">
                     <td class="horizon-td text-left px-4 py-2" 
                         v-for="(item, indexItem) in row" :key="indexItem"
+                        :class="getColorFromColumn(indexItem, item)"
                         > 
                         <template v-if="getColumnType(indexItem) === 'icon'">
                             <component :is="Heroicons[getIconFromColumn(indexItem, item) + 'Icon']" class="size-5"/>
@@ -169,8 +170,18 @@ const getColumnType = (column) => {
 };
 
 const getIconFromColumn = (column, value) => {
-    return props.columnTypes.find(type => type.column === column).icons[value]
+    const columnInfo = props.columnTypes.find(type => type.column === column)
+
+    return columnInfo ? columnInfo.icons?.[value] : ''
 }
+
+const getColorFromColumn = (column, value) => {
+    // Cherche dans 'columnTypes' l'entrée pour cette colonne
+    const columnInfo = props.columnTypes.find(type => type.column === column);
+    
+    // Si une couleur est définie pour la valeur de la cellule, la renvoyer, sinon utiliser une couleur par défaut
+    return columnInfo ? columnInfo.colors?.[value] : '';
+};
 
 const hasSort = computed(() => {
     return (label) => props.sortable.includes(getKeyFromLabel(label))
