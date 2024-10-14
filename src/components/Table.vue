@@ -91,7 +91,7 @@
                     <td class="horizon-td text-left px-4 py-2 flex gap-3" v-if="props.actions">
                         <template v-for="action in props.actions" :key="action.event">
                             <button 
-                                @click="$emit('action', {event: action.event, row: row})" 
+                                @click="handleAction({action: action, row: row})" 
                                 class="horizon-td-button flex gap-1"
                             >
                                 <component :is="Heroicons[action.icon + 'Icon']" class="horizon-td-icon size-5" v-if="action.icon"/>
@@ -104,6 +104,18 @@
                 </tr>
             </tbody>
         </table>
+
+        <Teleport to="body">
+            <div v-if="openModal" class="horizon-table-modal absolute inset-0 bg-slate-300/70 flex items-center justify-center">
+               
+                    <div class="modal-content bg-white p-5 shadow rounded">
+                        
+                        <p>Hello from the modal!</p>
+                        <button @click="openModal = false">Close</button>
+                    </div>
+          
+            </div>
+        </Teleport>
     </div>
 </template>
 
@@ -140,6 +152,7 @@ const props = defineProps({
 
 const sortKey = ref(null)
 const searchTerm = ref('')
+const openModal = ref(false)
 
 const activeFilters = reactive({
     checkbox: {},
@@ -290,6 +303,14 @@ const getSelectOptions = (column) => {
 const getToggleValues = (column) => {
     const columnInfo = props.columnTypes.find(type => type.column === column);
     return columnInfo?.toggleValues || { on: true, off: false };
+}
+
+const handleAction = (event) => {
+    if(event.action.confirm) {
+        openModal.value = true
+    } else {
+        $emit('action', {event: action.event, row: row})
+    }
 }
 
 const hasSort = computed(() => {
