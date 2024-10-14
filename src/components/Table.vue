@@ -27,6 +27,8 @@
                                 class="size-4" />
                         </div>
                     </th>
+
+                    <th></th>
                 </tr>
             </thead>
 
@@ -85,6 +87,20 @@
                             {{ item }}
                         </template>
                     </td>
+
+                    <td class="horizon-td text-left px-4 py-2 flex gap-3" v-if="props.actions">
+                        <template v-for="action in props.actions" :key="action.event">
+                            <button 
+                                @click="$emit('action', {event: action.event, row: row})" 
+                                class="horizon-td-button flex gap-1"
+                            >
+                                <component :is="Heroicons[action.icon + 'Icon']" class="horizon-td-icon size-5" v-if="action.icon"/>
+                                <template v-if="action.label">
+                                    {{ action.label }}
+                                </template>
+                            </button>
+                        </template>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -114,13 +130,16 @@ const props = defineProps({
     },
     columnTypes: {
         type: Array,
-        default: () => [] // Ex: [{ label: "Status", type: "icon", icon: "CheckIcon" }]
+        default: () => [] 
+    },
+    actions: {
+        type: Array,
+        default: () => [] 
     },
 })
 
 const sortKey = ref(null)
 const searchTerm = ref('')
-const columnSelect = ref()
 
 const activeFilters = reactive({
     checkbox: {},

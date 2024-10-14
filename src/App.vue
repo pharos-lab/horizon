@@ -9,9 +9,11 @@
       :search="['name', 'age']" 
       :filters="filters" 
       :columnTypes="columnTypes" 
+      :actions="actions"
       @select-change="event => console.log(event)"
       @toggleChange="event => console.log(event)"
       @checkboxChange="event => console.log(event)"
+      @action="event => console.log(event)"
       ></Table>
   </div>
 </template>
@@ -132,7 +134,7 @@ const columnTypes = [
   },
   {
     column: 'status', 
-    type: 'select',  
+    type: 'select',
     options: [       
         { value: 'success', label: 'Success' },
         { value: 'fail', label: 'Fail' },
@@ -144,6 +146,24 @@ const columnTypes = [
     type: 'checkbox',
     toggleValues: { on: true, off: false }  // les valeurs que "toggle" va gérer
 }
+]
+
+const actions = [
+  {
+    label: 'edit',
+    icon: 'PencilSquare',
+    event: 'edit',
+  },
+  {
+    label: 'voir',
+    icon: 'Eye',
+    event: 'see',
+  },
+  {
+    label: 'delete',
+    icon: 'Trash',
+    event: 'delete',
+  }
 ]
 </script>
 
