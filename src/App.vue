@@ -3,7 +3,7 @@
 
   <div class="p-8">
 
-    <Table :data="data" :labels="labels" :sortable="['name', 'active']" :search="['name', 'age']" :filters="filters" :columnTypes="columnTypes"></Table>
+    <Table :data="data" :labels="labels" :sortable="['name', 'active']" :search="['name', 'age']" :filters="filters" :columnTypes="columnTypes" @select-change="event => console.log(event)"></Table>
   </div>
 </template>
 

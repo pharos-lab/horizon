@@ -50,7 +50,7 @@
                         </template>
 
                         <template v-else-if="getColumnType(indexItem) === 'select'">
-                            <select class="horizon-td-select">
+                            <select class="horizon-td-select" @change="event => $emit('selectChange', {row: row,[indexItem]: event.target.value})">
                                 <option 
                                     v-for="option in getSelectOptions(indexItem)" 
                                     :key="option.value" 
@@ -151,6 +151,10 @@ const sortedData = computed(() => {
     return sortData(dataToSort, sortKey.value, sortableData[sortKey.value]);
 })
 
+const select = (event) => {
+    console.log(event)
+}
+
 const sortLabel = (label) => {
     const key = getKeyFromLabel(label)
     
@@ -245,7 +249,6 @@ const getImageShape = (column) => {
 }
 
 const getSelectOptions = (column) => {
-    console.log()
     const columnInfo = props.columnTypes.find(type => type.column === column);
     return columnInfo ? columnInfo.options : [];
 }
