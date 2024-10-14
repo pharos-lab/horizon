@@ -71,6 +71,15 @@
                                 <span class="slider round absolute cursor-pointer inset-0 bg-slate-300 transition-transform duration-500 rounded-full peer-checked:bg-sky-500"></span>
                             </label>
                         </template>
+
+                        <template v-else-if="getColumnType(indexItem) === 'checkbox'">
+                            <label class="relative">
+                                <input type="checkbox"
+                                    class=""
+                                    :checked="item"
+                                    @change="event => $emit('checkboxChange', {row: row, [indexItem]: event.target.checked })">
+                            </label>
+                        </template>
                         
                         <template v-else>
                             {{ item }}

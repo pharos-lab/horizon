@@ -11,6 +11,7 @@
       :columnTypes="columnTypes" 
       @select-change="event => console.log(event)"
       @toggleChange="event => console.log(event)"
+      @checkboxChange="event => console.log(event)"
       ></Table>
   </div>
 </template>
@@ -140,7 +141,7 @@ const columnTypes = [
   },
   {
     column: 'admin',  // nom de la colonne dans tes données
-    type: 'toggle',
+    type: 'checkbox',
     toggleValues: { on: true, off: false }  // les valeurs que "toggle" va gérer
 }
 ]
