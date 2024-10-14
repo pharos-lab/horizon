@@ -61,6 +61,16 @@
                                 </option>
                             </select>
                         </template>
+
+                        <template v-else-if="getColumnType(indexItem) === 'toggle'">
+                            <label class="switch relative w-10 h-5 inline-block">
+                                <input type="checkbox"
+                                    class="opacity-0 w-0 h-0 peer"
+                                    :checked="item === getToggleValues(indexItem).on"
+                                    @change="event => $emit('toggleChange', {row: row, [indexItem]: event.target.checked ? getToggleValues(indexItem).on : getToggleValues(indexItem).off})">
+                                <span class="slider round absolute cursor-pointer inset-0 bg-slate-300 transition-transform duration-500 rounded-full peer-checked:bg-sky-500"></span>
+                            </label>
+                        </template>
                         
                         <template v-else>
                             {{ item }}
@@ -150,10 +160,6 @@ const sortedData = computed(() => {
     const dataToSort = [...searchedData.value];
     return sortData(dataToSort, sortKey.value, sortableData[sortKey.value]);
 })
-
-const select = (event) => {
-    console.log(event)
-}
 
 const sortLabel = (label) => {
     const key = getKeyFromLabel(label)
@@ -253,10 +259,32 @@ const getSelectOptions = (column) => {
     return columnInfo ? columnInfo.options : [];
 }
 
+const getToggleValues = (column) => {
+    const columnInfo = props.columnTypes.find(type => type.column === column);
+    return columnInfo?.toggleValues || { on: true, off: false };
+}
+
 const hasSort = computed(() => {
     return (label) => props.sortable.includes(getKeyFromLabel(label))
 })
 </script>
 
 <style scoped>
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider:before {
+  transform: translateX(16px);
+}
+
 </style>

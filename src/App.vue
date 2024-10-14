@@ -3,7 +3,15 @@
 
   <div class="p-8">
 
-    <Table :data="data" :labels="labels" :sortable="['name', 'active']" :search="['name', 'age']" :filters="filters" :columnTypes="columnTypes" @select-change="event => console.log(event)"></Table>
+    <Table :data="data" 
+      :labels="labels" 
+      :sortable="['name', 'active']" 
+      :search="['name', 'age']" 
+      :filters="filters" 
+      :columnTypes="columnTypes" 
+      @select-change="event => console.log(event)"
+      @toggleChange="event => console.log(event)"
+      ></Table>
   </div>
 </template>
 
@@ -17,7 +25,8 @@ const data = [
     age: '24',
     imgS: '/pathok/to/img.png', 
     active: true,
-    status: 'success'
+    status: 'success',
+    admin: true
   },
   {
     name: 'mickey',
@@ -25,7 +34,8 @@ const data = [
     age: '35',
     imgS: '/path/to/img.png', 
     active: false,
-    status: 'fail'
+    status: 'fail',
+    admin: false
   },
   {
     name: 'eruiruei',
@@ -33,7 +43,8 @@ const data = [
     age: 35,
     imgS: '/path/to/img.png', 
     active: false,
-    status: 'success'
+    status: 'success',
+    admin: false
   },
   {
     name: 'paozaka',
@@ -41,7 +52,8 @@ const data = [
     age: 35,
     imgS: '/path/to/img.png', 
     active: true,
-    status: 'pending'
+    status: 'pending',
+    admin: false
   },
   {
     name: 'lsdklz',
@@ -49,7 +61,8 @@ const data = [
     age: 35,
     imgS: '/path/to/img.png', 
     active: false,
-    status: 'fail'
+    status: 'fail',
+    admin: true
   },
   {
     name: 'mth',
@@ -57,7 +70,8 @@ const data = [
     age: 35,
     imgS: '/path/to/img.png', 
     active: true,
-    status: 'success'
+    status: 'success',
+    admin: true
   },
   {
     name: 'mth',
@@ -65,11 +79,12 @@ const data = [
     age: 35,
     imgS: '/path/to/img.png', 
     active: true,
-    status: 'success'
+    status: 'success',
+    admin: false
   }
 ]
 
-const labels = ['Prénom', 'Nom', 'Age', 'avatar', 'Actif', 'status']
+const labels = ['Prénom', 'Nom', 'Age', 'avatar', 'Actif', 'status', 'is admin']
 
 const filters= [
   {
@@ -122,6 +137,11 @@ const columnTypes = [
         { value: 'fail', label: 'Fail' },
         { value: 'pending', label: 'Pending' }
     ]
+  },
+  {
+    column: 'admin',  // nom de la colonne dans tes données
+    type: 'toggle',
+    toggleValues: { on: true, off: false }  // les valeurs que "toggle" va gérer
 }
 ]
 </script>
