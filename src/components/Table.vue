@@ -137,14 +137,16 @@
 </template>
 
 <script setup>
+import { computed, ref, reactive } from 'vue';
 import { ChevronDownIcon } from '@heroicons/vue/24/solid'
 import { ChevronUpIcon } from '@heroicons/vue/24/solid'
 import * as Heroicons  from '@heroicons/vue/24/outline'
-import { computed, ref, reactive, onMounted } from 'vue';
+
 import Filters from './Filters.vue'
 import Badges from './Badges.vue'
-import { initializeFilters, checkFilters, getKeyFromLabel  } from './utils.js'
+import { getKeyFromLabel  } from './utils.js'
 import { useTableSorting } from './composables/tableSorting.js';
+import { useTableFilters } from './composables/tableFiltering.js';
 
 const props = defineProps({
     data: {
@@ -178,37 +180,12 @@ const modal = reactive({
     action: null
 })
 
-const activeFilters = reactive({
-    checkbox: {},
-    select: {}
-});
-
-onMounted(() => {
-    initializeFilters(props.filters, activeFilters);
-
-    props.filters.forEach(filter => {
-        if (filter.type === 'checkbox') {
-            activeFilters.checkbox[filter.column] = false; // Par défaut, décoché
-        }
-        if (filter.type === 'select') {
-            activeFilters.select[filter.column] = ''; // Par défaut, aucune sélection
-        }
-    });
-    
-})
-
 const sortableData = reactive(
     props.sortable.reduce((obj, value) => {
         obj[value] = null
         return obj;
     }, {})
 )
-
-
-
-const filteredData = computed(() => {
-    return props.data.filter(row => checkFilters(row, activeFilters));
-});
 
 const searchedData = computed(() => {
     if (!searchTerm.value) {
@@ -225,26 +202,7 @@ const searchedData = computed(() => {
 
 const { sortedData, sortLabel, hasSort } = useTableSorting(props, searchedData);
 
-
-const resetFilters = () => {
-    // Réinitialiser les filtres
-    Object.keys(activeFilters.checkbox).forEach(key => {
-        activeFilters.checkbox[key] = false;
-    });
-
-    Object.keys(activeFilters.select).forEach(key => {
-        activeFilters.select[key] = '';
-    });
-    //searchTerm.value = ''; // Réinitialiser le champ de recherche
-};
-
-const clearSelectFilter = (key) => {
-    activeFilters.select[key] = ''; // Réinitialiser le filtre select
-};
-
-const clearCheckboxFilter = (key) => {
-    activeFilters.checkbox[key] = false; // Décocher la checkbox
-};
+const { activeFilters, filteredData, resetFilters, clearSelectFilter, clearCheckboxFilter } = useTableFilters(props);
 
 const getColumnType = (column) => {
     const columnInfo = props.columnTypes.find(type => type.column === column);
