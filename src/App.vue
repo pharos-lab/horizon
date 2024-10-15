@@ -153,11 +153,16 @@ const actions = [
     label: 'edit',
     icon: 'PencilSquare',
     event: 'edit',
+    colors: 'text-yellow-500'
   },
   {
     label: 'voir',
     icon: 'Eye',
     event: 'see',
+    colors: {
+      icon: 'text-sky-500',
+      label: 'text-red-500'
+    }
   },
   {
     label: 'delete',

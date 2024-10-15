@@ -95,9 +95,11 @@
                                 @click="handleAction({action: action, row: row})" 
                                 class="horizon-td-button flex gap-1 items-center"
                                 >
-                                    <component :is="Heroicons[action.icon + 'Icon']" class="horizon-td-icon size-5" v-if="action.icon"/>
+                                    <component :is="Heroicons[action.icon + 'Icon']" class="horizon-td-icon size-5" v-if="action.icon" :class="Utils.getColorFromAction(action, 'icon')"/>
                                     <template v-if="action.label">
-                                        {{ action.label }}
+                                        <span :class="Utils.getColorFromAction(action, 'label')">
+                                            {{ action.label }}
+                                        </span>
                                     </template>
                                 </button>
                             </template>

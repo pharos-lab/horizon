@@ -70,6 +70,10 @@ const getColorFromColumn = (column, value, props) => {
     return columnInfo ? columnInfo.colors?.[value] || columnInfo.colors : '';
 };
 
+const getColorFromAction = (action, value) => {
+    return action.colors ? action.colors?.[value] || action.colors : '';
+};
+
 const getImageSize = (column, props) => {
     const columnInfo = props.columnTypes.find(type => type.column === column);
 
@@ -130,4 +134,6 @@ export {
     getImageSize, 
     getImageUrl, 
     getSelectOptions, 
-    getToggleValues}
+    getToggleValues,
+    getColorFromAction
+}
