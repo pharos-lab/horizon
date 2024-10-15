@@ -149,6 +149,7 @@ import { getKeyFromLabel  } from './utils.js'
 import { useTableSorting } from './composables/tableSorting.js';
 import { useTableFilters } from './composables/tableFiltering.js';
 import { useTableSearch } from './composables/tableSearching.js';
+import { useTableModal } from './composables/tableModal.js';
 
 const props = defineProps({
     data: {
@@ -172,19 +173,14 @@ const props = defineProps({
     },
 })
 
-const emit = defineEmits(['action'])
+const emit = defineEmits(['action', 'selectChange', 'checkboxChange', 'toggleChange'])
 
 const sortKey = ref(null)
-const modal = reactive({
-    isOpen: false,
-    row: null,
-    action: null
-})
-
 
 const { activeFilters, filteredData, resetFilters, clearSelectFilter, clearCheckboxFilter } = useTableFilters(props);
 const { searchTerm, searchedData } = useTableSearch(props, filteredData);
 const { sortedData, sortableData, sortLabel, hasSort } = useTableSorting(props, searchedData);
+const { modal, handleAction, confirmAction, closeModal } = useTableModal(emit);
 
 const getColumnType = (column) => {
     const columnInfo = props.columnTypes.find(type => type.column === column);
@@ -251,28 +247,6 @@ const getToggleValues = (column) => {
     const columnInfo = props.columnTypes.find(type => type.column === column);
     return columnInfo?.toggleValues || { on: true, off: false };
 }
-
-const handleAction = ({action, row }) => {
-    if(action.confirm) {
-        modal.isOpen = true
-        modal.action = action
-        modal.row = row
-    } else {
-        emit('action', {event: action.event, row: row})
-    }
-}
-
-const confirmAction = () => {
-    // When confirmed, emit the action
-    emit('action', { event: modal.action.event, row: modal.row });
-    closeModal();
-};
-
-const closeModal = () => {
-    modal.isOpen = false;
-    modal.action = null;
-    modal.row = null;
-};
 </script>
 
 <style scoped>
