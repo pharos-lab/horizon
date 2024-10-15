@@ -110,19 +110,24 @@
         <Teleport to="body">
             <div v-if="modal.isOpen" class="horizon-table-modal absolute inset-0 bg-slate-300/70 flex items-center justify-center">
                
-                    <div class="modal-content bg-white p-5 shadow rounded">
+                    <div class="modal-content bg-white p-8 shadow rounded-md flex flex-col gap-8">
                         
                         <template v-if="modal.action">
+                            <p class="flex justify-center">
+                                <component :is="Heroicons[modal.action.icon + 'Icon']" class="horizon-td-icon size-12 p-3 border rounded-full" v-if="modal.action.icon"/>
+                            </p>
+
                             <p v-if="modal.action.modalContent">
                                 {{ modal.action.modalContent }}
                             </p>
+
                             <p v-else>
-                                Are you sure you want to perform the "{{ modal.action.label }}" action?
+                                Are you sure you want to perform the <span class="capitalize">"{{ modal.action.label }}"</span> action?
                             </p>
                         </template>
                         <div class="flex justify-end gap-3 mt-5">
-                            <button class="btn bg-gray-400 text-white px-4 py-2 rounded" @click="closeModal">Cancel</button>
-                            <button class="btn bg-blue-500 text-white px-4 py-2 rounded" @click="confirmAction">Confirm</button>
+                            <button class="btn bg-slate-400 text-white px-4 py-2 rounded" @click="closeModal">Cancel</button>
+                            <button class="btn bg-sky-500 text-white px-4 py-2 rounded" @click="confirmAction">Confirm</button>
                         </div>
                     </div>
           
