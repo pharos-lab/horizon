@@ -21,14 +21,14 @@
                         >
                         <div class="flex gap-2 items-center">
                             {{ label }}
-                            <ChevronDownIcon v-if="hasSort(label) && (sortableData[getKeyFromLabel(label)] == 'asc' || sortableData[getKeyFromLabel(label)] == null)" 
+                            <ChevronDownIcon v-if="hasSort(label) && (sortableData[getKeyFromLabel(label, props)] == 'asc' || sortableData[getKeyFromLabel(label, props)] == null)" 
                                 class="size-4" />
-                            <ChevronUpIcon v-if="hasSort(label) && (sortableData[getKeyFromLabel(label)] == 'desc')" 
+                            <ChevronUpIcon v-if="hasSort(label) && (sortableData[getKeyFromLabel(label, props)] == 'desc')" 
                                 class="size-4" />
                         </div>
                     </th>
 
-                    <th></th>
+                    <th v-if="props.actions"></th>
                 </tr>
             </thead>
 
@@ -143,7 +143,8 @@ import * as Heroicons  from '@heroicons/vue/24/outline'
 import { computed, ref, reactive, onMounted } from 'vue';
 import Filters from './Filters.vue'
 import Badges from './Badges.vue'
-import { initializeFilters, checkFilters, sortData } from './utils.js'
+import { initializeFilters, checkFilters, getKeyFromLabel  } from './utils.js'
+import { useTableSorting } from './composables/tableSorting.js';
 
 const props = defineProps({
     data: {
@@ -203,6 +204,8 @@ const sortableData = reactive(
     }, {})
 )
 
+
+
 const filteredData = computed(() => {
     return props.data.filter(row => checkFilters(row, activeFilters));
 });
@@ -220,20 +223,8 @@ const searchedData = computed(() => {
     });
 })
 
-const sortedData = computed(() => {
-    const dataToSort = [...searchedData.value];
-    return sortData(dataToSort, sortKey.value, sortableData[sortKey.value]);
-})
+const { sortedData, sortLabel, hasSort } = useTableSorting(props, searchedData);
 
-const sortLabel = (label) => {
-    const key = getKeyFromLabel(label)
-    
-    if(!sortableData.hasOwnProperty(key)) return 
-    
-    sortKey.value = key
-
-    sortableData[key] = sortableData[key] == 'asc' ? 'desc' : 'asc'
-}
 
 const resetFilters = () => {
     // Réinitialiser les filtres
@@ -253,13 +244,6 @@ const clearSelectFilter = (key) => {
 
 const clearCheckboxFilter = (key) => {
     activeFilters.checkbox[key] = false; // Décocher la checkbox
-};
-
-const getKeyFromLabel = (label) => {
-    if (props.labels && props.data.length > 0) {
-        return Object.keys(props.data[0])[props.labels.indexOf(label)]
-    }
-    return label
 };
 
 const getColumnType = (column) => {
@@ -349,10 +333,6 @@ const closeModal = () => {
     modal.action = null;
     modal.row = null;
 };
-
-const hasSort = computed(() => {
-    return (label) => props.sortable.includes(getKeyFromLabel(label))
-})
 </script>
 
 <style scoped>

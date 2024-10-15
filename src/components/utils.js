@@ -44,4 +44,12 @@ const compareValues = (aVal, bVal) => {
     return aVal - bVal;
 };
 
-export {initializeFilters, checkFilters, sortData, compareValues}
+const getKeyFromLabel = (label, props) => {
+    if (props.labels && props.data.length > 0) {
+      return Object.keys(props.data[0])[props.labels.indexOf(label)];
+    }
+    return label;
+};
+  
+
+export {initializeFilters, checkFilters, sortData, compareValues, getKeyFromLabel}
