@@ -163,7 +163,7 @@ const actions = [
     label: 'delete',
     icon: 'Trash',
     event: 'delete',
-    confirm: true
+    confirm: true,
   }
 ]
 </script>

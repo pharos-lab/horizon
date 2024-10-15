@@ -88,30 +88,42 @@
                         </template>
                     </td>
 
-                    <td class="horizon-td text-left px-4 py-2 flex gap-3" v-if="props.actions">
-                        <template v-for="action in props.actions" :key="action.event">
-                            <button 
+                    <td class="horizon-td text-left px-4 py-2 " v-if="props.actions">
+                        <div class="flex gap-3">
+                            <template v-for="action in props.actions" :key="action.event">
+                                <button 
                                 @click="handleAction({action: action, row: row})" 
-                                class="horizon-td-button flex gap-1"
-                            >
-                                <component :is="Heroicons[action.icon + 'Icon']" class="horizon-td-icon size-5" v-if="action.icon"/>
-                                <template v-if="action.label">
-                                    {{ action.label }}
-                                </template>
-                            </button>
-                        </template>
+                                class="horizon-td-button flex gap-1 items-center"
+                                >
+                                    <component :is="Heroicons[action.icon + 'Icon']" class="horizon-td-icon size-5" v-if="action.icon"/>
+                                    <template v-if="action.label">
+                                        {{ action.label }}
+                                    </template>
+                                </button>
+                            </template>
+                        </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 
         <Teleport to="body">
-            <div v-if="openModal" class="horizon-table-modal absolute inset-0 bg-slate-300/70 flex items-center justify-center">
+            <div v-if="modal.isOpen" class="horizon-table-modal absolute inset-0 bg-slate-300/70 flex items-center justify-center">
                
                     <div class="modal-content bg-white p-5 shadow rounded">
                         
-                        <p>Hello from the modal!</p>
-                        <button @click="openModal = false">Close</button>
+                        <template v-if="modal.action">
+                            <p v-if="modal.action.modalContent">
+                                {{ modal.action.modalContent }}
+                            </p>
+                            <p v-else>
+                                Are you sure you want to perform the "{{ modal.action.label }}" action?
+                            </p>
+                        </template>
+                        <div class="flex justify-end gap-3 mt-5">
+                            <button class="btn bg-gray-400 text-white px-4 py-2 rounded" @click="closeModal">Cancel</button>
+                            <button class="btn bg-blue-500 text-white px-4 py-2 rounded" @click="confirmAction">Confirm</button>
+                        </div>
                     </div>
           
             </div>
@@ -150,9 +162,15 @@ const props = defineProps({
     },
 })
 
+const emit = defineEmits(['action',])
+
 const sortKey = ref(null)
 const searchTerm = ref('')
-const openModal = ref(false)
+const modal = reactive({
+    isOpen: false,
+    row: null,
+    action: null
+})
 
 const activeFilters = reactive({
     checkbox: {},
@@ -305,13 +323,27 @@ const getToggleValues = (column) => {
     return columnInfo?.toggleValues || { on: true, off: false };
 }
 
-const handleAction = (event) => {
-    if(event.action.confirm) {
-        openModal.value = true
+const handleAction = ({action, row }) => {
+    if(action.confirm) {
+        modal.isOpen = true
+        modal.action = action
+        modal.row = row
     } else {
-        $emit('action', {event: action.event, row: row})
+        emit('action', {event: action.event, row: row})
     }
 }
+
+const confirmAction = () => {
+    // When confirmed, emit the action
+    emit('action', { event: modal.action.event, row: modal.row });
+    closeModal();
+};
+
+const closeModal = () => {
+    modal.isOpen = false;
+    modal.action = null;
+    modal.row = null;
+};
 
 const hasSort = computed(() => {
     return (label) => props.sortable.includes(getKeyFromLabel(label))
