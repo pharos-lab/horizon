@@ -29,5 +29,5 @@ export function useTableSorting(props, searchedData) {
     return props.sortable.includes(getKeyFromLabel(label, props));
   };
 
-  return { sortedData, sortLabel, hasSort };
+  return { sortedData, sortableData, sortLabel, hasSort };
 }

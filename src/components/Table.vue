@@ -138,6 +138,7 @@
 
 <script setup>
 import { computed, ref, reactive } from 'vue';
+
 import { ChevronDownIcon } from '@heroicons/vue/24/solid'
 import { ChevronUpIcon } from '@heroicons/vue/24/solid'
 import * as Heroicons  from '@heroicons/vue/24/outline'
@@ -147,6 +148,7 @@ import Badges from './Badges.vue'
 import { getKeyFromLabel  } from './utils.js'
 import { useTableSorting } from './composables/tableSorting.js';
 import { useTableFilters } from './composables/tableFiltering.js';
+import { useTableSearch } from './composables/tableSearching.js';
 
 const props = defineProps({
     data: {
@@ -170,39 +172,19 @@ const props = defineProps({
     },
 })
 
-const emit = defineEmits(['action',])
+const emit = defineEmits(['action'])
 
 const sortKey = ref(null)
-const searchTerm = ref('')
 const modal = reactive({
     isOpen: false,
     row: null,
     action: null
 })
 
-const sortableData = reactive(
-    props.sortable.reduce((obj, value) => {
-        obj[value] = null
-        return obj;
-    }, {})
-)
-
-const searchedData = computed(() => {
-    if (!searchTerm.value) {
-        return filteredData.value; // Pas de recherche, retourner toutes les données
-    }
-
-    return filteredData.value.filter(row => {
-        return props.search.some(key => {
-            const cellValue = String(row[key] || '').toLowerCase();
-            return cellValue.includes(searchTerm.value.toLowerCase());
-        });
-    });
-})
-
-const { sortedData, sortLabel, hasSort } = useTableSorting(props, searchedData);
 
 const { activeFilters, filteredData, resetFilters, clearSelectFilter, clearCheckboxFilter } = useTableFilters(props);
+const { searchTerm, searchedData } = useTableSearch(props, filteredData);
+const { sortedData, sortableData, sortLabel, hasSort } = useTableSorting(props, searchedData);
 
 const getColumnType = (column) => {
     const columnInfo = props.columnTypes.find(type => type.column === column);
