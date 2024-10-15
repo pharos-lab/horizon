@@ -21,9 +21,9 @@
                         >
                         <div class="flex gap-2 items-center">
                             {{ label }}
-                            <ChevronDownIcon v-if="hasSort(label) && (sortableData[getKeyFromLabel(label, props)] == 'asc' || sortableData[getKeyFromLabel(label, props)] == null)" 
+                            <ChevronDownIcon v-if="hasSort(label) && (sortableData[Utils.getKeyFromLabel(label, props)] == 'asc' || sortableData[Utils.getKeyFromLabel(label, props)] == null)" 
                                 class="size-4" />
-                            <ChevronUpIcon v-if="hasSort(label) && (sortableData[getKeyFromLabel(label, props)] == 'desc')" 
+                            <ChevronUpIcon v-if="hasSort(label) && (sortableData[Utils.getKeyFromLabel(label, props)] == 'desc')" 
                                 class="size-4" />
                         </div>
                     </th>
@@ -37,24 +37,24 @@
                 <tr class="horizon-tr divide-x" v-for="(row, indexRow) in sortedData" :key="indexRow">
                     <td class="horizon-td text-left px-4 py-2" 
                         v-for="(item, indexItem) in row" :key="indexItem"
-                        :class="getColorFromColumn(indexItem, item)"
+                        :class="Utils.getColorFromColumn(indexItem, item, props)"
                         > 
-                        <template v-if="getColumnType(indexItem) === 'icon'">
-                            <component :is="Heroicons[getIconFromColumn(indexItem, item) + 'Icon']" class="horizon-td-icon size-5"/>
+                        <template v-if="Utils.getColumnType(indexItem, props) === 'icon'">
+                            <component :is="Heroicons[Utils.getIconFromColumn(indexItem, item, props) + 'Icon']" class="horizon-td-icon size-5"/>
                         </template>
 
-                        <template v-else-if="getColumnType(indexItem) === 'image'">
-                            <img :src="getImageUrl(indexItem, item)" 
+                        <template v-else-if="Utils.getColumnType(indexItem, props) === 'image'">
+                            <img :src="Utils.getImageUrl(indexItem, item, props)" 
                                 class="horizon-td-image size-5" 
                                 :alt="item" 
-                                :style="getImageSize(indexItem)" 
-                                :class="getImageShape(indexItem)">
+                                :style="Utils.getImageSize(indexItem, props)" 
+                                :class="Utils.getImageShape(indexItem, props)">
                         </template>
 
-                        <template v-else-if="getColumnType(indexItem) === 'select'">
+                        <template v-else-if="Utils.getColumnType(indexItem, props) === 'select'">
                             <select class="horizon-td-select" @change="event => $emit('selectChange', {row: row,[indexItem]: event.target.value})">
                                 <option 
-                                    v-for="option in getSelectOptions(indexItem)" 
+                                    v-for="option in Utils.getSelectOptions(indexItem, props)" 
                                     :key="option.value" 
                                     :value="option.value"
                                     :selected="option.value == item"
@@ -64,17 +64,17 @@
                             </select>
                         </template>
 
-                        <template v-else-if="getColumnType(indexItem) === 'toggle'">
+                        <template v-else-if="Utils.getColumnType(indexItem, props) === 'toggle'">
                             <label class="switch relative w-10 h-5 inline-block">
                                 <input type="checkbox"
                                     class="opacity-0 w-0 h-0 peer"
-                                    :checked="item === getToggleValues(indexItem).on"
-                                    @change="event => $emit('toggleChange', {row: row, [indexItem]: event.target.checked ? getToggleValues(indexItem).on : getToggleValues(indexItem).off})">
+                                    :checked="item === Utils.getToggleValues(indexItem, props).on"
+                                    @change="event => $emit('toggleChange', {row: row, [indexItem]: event.target.checked ? Utils.getToggleValues(indexItem, props).on : Utils.getToggleValues(indexItem, props).off})">
                                 <span class="slider round absolute cursor-pointer inset-0 bg-slate-300 transition-transform duration-500 rounded-full peer-checked:bg-sky-500"></span>
                             </label>
                         </template>
 
-                        <template v-else-if="getColumnType(indexItem) === 'checkbox'">
+                        <template v-else-if="Utils.getColumnType(indexItem, props) === 'checkbox'">
                             <label class="relative">
                                 <input type="checkbox"
                                     class=""
@@ -145,7 +145,7 @@ import * as Heroicons  from '@heroicons/vue/24/outline'
 
 import Filters from './Filters.vue'
 import Badges from './Badges.vue'
-import { getKeyFromLabel  } from './utils.js'
+import * as Utils  from './utils.js'
 import { useTableSorting } from './composables/tableSorting.js';
 import { useTableFilters } from './composables/tableFiltering.js';
 import { useTableSearch } from './composables/tableSearching.js';
@@ -182,71 +182,7 @@ const { searchTerm, searchedData } = useTableSearch(props, filteredData);
 const { sortedData, sortableData, sortLabel, hasSort } = useTableSorting(props, searchedData);
 const { modal, handleAction, confirmAction, closeModal } = useTableModal(emit);
 
-const getColumnType = (column) => {
-    const columnInfo = props.columnTypes.find(type => type.column === column);
-    return columnInfo ? columnInfo.type : 'text'; // Retourne 'text' par défaut si aucun type n'est spécifié
-};
 
-const getIconFromColumn = (column, value) => {
-    const columnInfo = props.columnTypes.find(type => type.column === column)
-
-    return columnInfo ? columnInfo.icons?.[value] : ''
-}
-
-const getColorFromColumn = (column, value) => {
-    // Cherche dans 'columnTypes' l'entrée pour cette colonne
-    const columnInfo = props.columnTypes.find(type => type.column === column);
-    
-    // Si une couleur est définie pour la valeur de la cellule, la renvoyer, sinon utiliser une couleur par défaut
-    return columnInfo ? columnInfo.colors?.[value] || columnInfo.colors : '';
-};
-
-const getImageSize = (column) => {
-    const columnInfo = props.columnTypes.find(type => type.column === column);
-
-    if (!columnInfo.size) return;
-
-    return {
-        width: columnInfo.size.width || 'auto',
-        height: columnInfo.size.height || 'auto',
-        aspectRatio: columnInfo.size.ratio || ''
-    }
-    
-}
-
-const getImageUrl = (column, value) => {
-  const columnInfo = props.columnTypes.find(type => type.column === column);
-
-  if (!columnInfo || columnInfo.type !== 'image') return '';
-
-  const basePath = columnInfo.basePath || ''; // Utiliser basePath s'il est défini
-
-  return basePath + value;
-}
-
-const getImageShape = (column) => {
-    const columnInfo = props.columnTypes.find(type => type.column === column);
-
-    switch (columnInfo.shape) {
-        case 'circle':
-            return 'rounded-full'
-            break;
-        case 'square':
-            return 'aspect-square'
-        default:
-            return ''
-    }
-}
-
-const getSelectOptions = (column) => {
-    const columnInfo = props.columnTypes.find(type => type.column === column);
-    return columnInfo ? columnInfo.options : [];
-}
-
-const getToggleValues = (column) => {
-    const columnInfo = props.columnTypes.find(type => type.column === column);
-    return columnInfo?.toggleValues || { on: true, off: false };
-}
 </script>
 
 <style scoped>
