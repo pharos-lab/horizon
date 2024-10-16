@@ -4,7 +4,7 @@
   <div class="p-8">
 
     <Table :data="data" 
-      :labels="labels" 
+      :labels="labels"
       :sortable="['name', 'active']" 
       :search="['name', 'age']" 
       :filters="filters" 
@@ -143,7 +143,7 @@ const columnTypes = [
   },
   {
     column: 'admin',  // nom de la colonne dans tes données
-    type: 'checkbox',
+    type: 'toggle',
     toggleValues: { on: true, off: false }  // les valeurs que "toggle" va gérer
 }
 ]

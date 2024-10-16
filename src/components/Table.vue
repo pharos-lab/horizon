@@ -32,58 +32,13 @@
 
             <tbody class="horizon-tbody">
                 <tr class="horizon-tr divide-x" v-for="(row, indexRow) in sortedData" :key="indexRow">
-                    <td class="horizon-td text-left px-4 py-2" 
-                        v-for="(item, indexItem) in row" :key="indexItem"
-                        :class="Utils.getColorFromColumn(indexItem, item, props)"
-                        > 
-                        <template v-if="Utils.getColumnType(indexItem, props) === 'icon'">
-                            <component :is="Heroicons[Utils.getIconFromColumn(indexItem, item, props) + 'Icon']" class="horizon-td-icon size-5"/>
-                        </template>
-
-                        <template v-else-if="Utils.getColumnType(indexItem, props) === 'image'">
-                            <img :src="Utils.getImageUrl(indexItem, item, props)" 
-                                class="horizon-td-image size-5" 
-                                :alt="item" 
-                                :style="Utils.getImageSize(indexItem, props)" 
-                                :class="Utils.getImageShape(indexItem, props)">
-                        </template>
-
-                        <template v-else-if="Utils.getColumnType(indexItem, props) === 'select'">
-                            <select class="horizon-td-select" @change="event => $emit('selectChange', {row: row,[indexItem]: event.target.value})">
-                                <option 
-                                    v-for="option in Utils.getSelectOptions(indexItem, props)" 
-                                    :key="option.value" 
-                                    :value="option.value"
-                                    :selected="option.value == item"
-                                >
-                                    {{ option.label }}
-                                </option>
-                            </select>
-                        </template>
-
-                        <template v-else-if="Utils.getColumnType(indexItem, props) === 'toggle'">
-                            <label class="switch relative w-10 h-5 inline-block">
-                                <input type="checkbox"
-                                    class="opacity-0 w-0 h-0 peer"
-                                    :checked="item === Utils.getToggleValues(indexItem, props).on"
-                                    @change="event => $emit('toggleChange', {row: row, [indexItem]: event.target.checked ? Utils.getToggleValues(indexItem, props).on : Utils.getToggleValues(indexItem, props).off})">
-                                <span class="slider round absolute cursor-pointer inset-0 bg-slate-300 transition-transform duration-500 rounded-full peer-checked:bg-sky-500"></span>
-                            </label>
-                        </template>
-
-                        <template v-else-if="Utils.getColumnType(indexItem, props) === 'checkbox'">
-                            <label class="relative">
-                                <input type="checkbox"
-                                    class=""
-                                    :checked="item"
-                                    @change="event => $emit('checkboxChange', {row: row, [indexItem]: event.target.checked })">
-                            </label>
-                        </template>
-                        
-                        <template v-else>
-                            {{ item }}
-                        </template>
-                    </td>
+                    <tr is="vue:TableCell" v-for="(item, indexItem) in row" 
+                        :key="indexItem" 
+                        :row="row" 
+                        :item="item" 
+                        :indexItem="indexItem" 
+                        :tableProps="props"
+                        @change="handleChange"></tr>
 
                     <td class="horizon-td text-left px-4 py-2 " v-if="props.actions">
                         <div class="flex gap-3">
@@ -91,7 +46,7 @@
                                 :action="action" 
                                 :row="row" v-for="action in props.actions" 
                                 :key="action.event"
-                                @action="handleAction({action, row})"
+                                @action="event => handleAction(event)"
                                 ></ActionButton>
                         </div>
                     </td>
@@ -139,6 +94,7 @@ import Filters from './Filters.vue'
 import Badges from './Badges.vue'
 import SortIcon from './SortIcon.vue'
 import ActionButton from './ActionButton.vue';
+import TableCell from './TableCell.vue';
 import * as Utils  from './utils.js'
 import { useTableSorting } from './composables/tableSorting.js';
 import { useTableFilters } from './composables/tableFiltering.js';
@@ -179,32 +135,16 @@ const props = defineProps({
 
 const emit = defineEmits(['action', 'selectChange', 'checkboxChange', 'toggleChange'])
 
-const sortKey = ref(null)
-
 const { activeFilters, filteredData, resetFilters, clearSelectFilter, clearCheckboxFilter } = useTableFilters(props);
 const { searchTerm, searchedData } = useTableSearch(props, filteredData);
 const { sortedData, sortableData, sortLabel, hasSort } = useTableSorting(props, searchedData);
 const { modal, handleAction, confirmAction, closeModal } = useTableModal(emit);
 
+const handleChange = event => {
+    emit(event.eventName, event.eventData)
+}
 
 </script>
 
 <style scoped>
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 16px;
-  width: 16px;
-  left: 4px;
-  bottom: 2px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider:before {
-  transform: translateX(16px);
-}
-
 </style>
