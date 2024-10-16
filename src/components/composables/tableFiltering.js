@@ -24,6 +24,10 @@ export function useTableFilters(props) {
     Object.keys(activeFilters.select).forEach(key => {
       activeFilters.select[key] = '';
     });
+
+    Object.keys(activeFilters.column).forEach(key => {
+      activeFilters.column[key] = true;
+    });
   };
 
   const clearSelectFilter = (key) => {

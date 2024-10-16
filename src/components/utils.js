@@ -8,7 +8,7 @@ const initializeFilters = (filters, activeFilters) => {
         }
         if(filter.type === 'column') {
             activeFilters.column = filter.columns.reduce((obj, value) => {
-                obj[value] = true; // Initialiser toutes les clés triables à null (pas de tri)
+                obj[value] = true;
                 return obj;
               }, {})
         }

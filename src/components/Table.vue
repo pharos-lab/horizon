@@ -87,7 +87,7 @@
 </template>
 
 <script setup>
-import { computed, ref, reactive } from 'vue';
+import { ref } from 'vue';
 import * as Heroicons  from '@heroicons/vue/24/outline'
 
 import Filters from './Filters.vue'
@@ -138,8 +138,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['action', 'selectChange', 'checkboxChange', 'toggleChange'])
-
-const visibleColumns = ref(props.columnFilters.map(col => ({ name: col, visible: true })));
 
 const { activeFilters, filteredData, resetFilters, clearSelectFilter, clearCheckboxFilter } = useTableFilters(props);
 const { searchTerm, searchedData } = useTableSearch(props, filteredData);
