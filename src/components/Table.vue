@@ -21,10 +21,7 @@
                         >
                         <div class="flex gap-2 items-center">
                             {{ label }}
-                            <ChevronDownIcon v-if="hasSort(label) && (sortableData[Utils.getKeyFromLabel(label, props)] == 'asc' || sortableData[Utils.getKeyFromLabel(label, props)] == null)" 
-                                class="size-4" />
-                            <ChevronUpIcon v-if="hasSort(label) && (sortableData[Utils.getKeyFromLabel(label, props)] == 'desc')" 
-                                class="size-4" />
+                            <SortIcon :label="label" :sortableData="sortableData" :tableProps="props" />
                         </div>
                     </th>
 
@@ -147,6 +144,7 @@ import * as Heroicons  from '@heroicons/vue/24/outline'
 
 import Filters from './Filters.vue'
 import Badges from './Badges.vue'
+import SortIcon from './SortIcon.vue'
 import * as Utils  from './utils.js'
 import { useTableSorting } from './composables/tableSorting.js';
 import { useTableFilters } from './composables/tableFiltering.js';
@@ -156,11 +154,21 @@ import { useTableModal } from './composables/tableModal.js';
 const props = defineProps({
     data: {
         type: Array,
-        default: () => []
+        default: () => [],
+        required: true
     },
-    labels: Array,
-    sortable: Array,
-    search: Array,
+    labels: {
+        type: Array,
+        default: null, 
+    },
+    sortable: {
+        type: Array,
+        default: () => [], 
+    },
+    search: {
+        type: Array,
+        default: () => [], 
+    },
     filters: {
         type: Array,
         default: () => []
