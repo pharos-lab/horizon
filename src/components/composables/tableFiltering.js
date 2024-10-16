@@ -4,7 +4,8 @@ import { initializeFilters, checkFilters } from '../utils';
 export function useTableFilters(props) {
   const activeFilters = reactive({
     checkbox: {},
-    select: {}
+    select: {},
+    column: []
   });
 
   // Initialiser les filtres à l'initialisation du composant

@@ -101,6 +101,10 @@ const filters= [
     label: 'Age',
     column: 'age',
     options: [24, 35] // Options possibles pour le select
+  },
+  {
+    type: 'column',
+    columns: ['name', 'admin']
   }
 ]
 

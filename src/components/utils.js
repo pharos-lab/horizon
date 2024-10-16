@@ -6,6 +6,12 @@ const initializeFilters = (filters, activeFilters) => {
         if (filter.type === 'select') {
             activeFilters.select[filter.column] = ''; // Par défaut, aucune sélection
         }
+        if(filter.type === 'column') {
+            activeFilters.column = filter.columns.reduce((obj, value) => {
+                obj[value] = true; // Initialiser toutes les clés triables à null (pas de tri)
+                return obj;
+              }, {})
+        }
     });
 };
 

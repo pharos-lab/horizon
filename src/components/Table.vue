@@ -12,33 +12,36 @@
         <table v-else class="horizon-table w-full">
             <thead class="horizon-thead">
                 <tr class="horizon-tr bg-slate-200">
-                    <th 
-                        v-for="(label, indexLabel) in (labels || Object.keys(props.data[0]))"
-                        :key="indexLabel"
-                        class="horizon-th text-left px-4 py-2"
-                        :class="{'cursor-pointer': hasSort(label)}"
-                        @click="sortLabel(label)"
-                        >
-                        <div class="flex gap-2 items-center">
-                            {{ label }}
-                            <SortIcon :label="label" :sortableData="sortableData" :tableProps="props" />
-                        </div>
-                    </th>
+                    <template v-for="(label, indexLabel) in (labels || Object.keys(props.data[0]))" :key="indexLabel">
+                        <th
+                            class="horizon-th text-left px-4 py-2"
+                            :class="{'cursor-pointer': hasSort(label)}"
+                            @click="sortLabel(label)"
+                            v-if="activeFilters.column[Utils.getKeyFromLabel(label, props)] !== false"
+                            >
+                            <div class="flex gap-2 items-center" >
+                                {{ label }}
+                                <SortIcon :label="label" :sortableData="sortableData" :tableProps="props" />
+                            </div>
+                        </th>
+                    </template>
 
                     <th v-if="props.actions"></th>
                 </tr>
             </thead>
 
-
             <tbody class="horizon-tbody">
                 <tr class="horizon-tr divide-x" v-for="(row, indexRow) in sortedData" :key="indexRow">
-                    <tr is="vue:TableCell" v-for="(item, indexItem) in row" 
+                    <template v-for="(item, indexItem) in row">
+                        <td is="vue:TableCell"  v-if="activeFilters.column[indexItem] !== false"
                         :key="indexItem" 
                         :row="row" 
                         :item="item" 
                         :indexItem="indexItem" 
                         :tableProps="props"
-                        @change="handleChange"></tr>
+                        @change="handleChange"
+                        ></td>
+                    </template>
 
                     <td class="horizon-td text-left px-4 py-2 " v-if="props.actions">
                         <div class="flex gap-3">
@@ -85,9 +88,6 @@
 
 <script setup>
 import { computed, ref, reactive } from 'vue';
-
-import { ChevronDownIcon } from '@heroicons/vue/24/solid'
-import { ChevronUpIcon } from '@heroicons/vue/24/solid'
 import * as Heroicons  from '@heroicons/vue/24/outline'
 
 import Filters from './Filters.vue'
@@ -131,9 +131,15 @@ const props = defineProps({
         type: Array,
         default: () => [] 
     },
+    columnFilters: {
+        type: Array,
+        default: () => []
+    }
 })
 
 const emit = defineEmits(['action', 'selectChange', 'checkboxChange', 'toggleChange'])
+
+const visibleColumns = ref(props.columnFilters.map(col => ({ name: col, visible: true })));
 
 const { activeFilters, filteredData, resetFilters, clearSelectFilter, clearCheckboxFilter } = useTableFilters(props);
 const { searchTerm, searchedData } = useTableSearch(props, filteredData);

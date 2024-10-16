@@ -1,5 +1,5 @@
 <template>
-    <div class="horizon-filters">
+    <div class="horizon-filters flex gap-8">
         <template v-for="filter in props.filters" :key="filter.label">
             <div class="horizon-filter-checkbox" v-if="filter.type === 'checkbox'">
                 <label>
@@ -18,6 +18,15 @@
         </template>
 
         <button @click="resetFilters">Reset Filters</button>
+    </div>
+
+    <div class="horizon-filters-column">
+        <template v-for="columnFilter in props.filters.find(filter => filter.type === 'column').columns ">
+            <label>
+                <input type="checkbox" v-model="activeFilters.column[columnFilter]">
+                {{ columnFilter }}
+            </label>
+        </template>
     </div>
 </template>
 
