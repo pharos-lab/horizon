@@ -87,19 +87,12 @@
 
                     <td class="horizon-td text-left px-4 py-2 " v-if="props.actions">
                         <div class="flex gap-3">
-                            <template v-for="action in props.actions" :key="action.event">
-                                <button 
-                                @click="handleAction({action: action, row: row})" 
-                                class="horizon-td-button flex gap-1 items-center"
-                                >
-                                    <component :is="Heroicons[action.icon + 'Icon']" class="horizon-td-icon size-5" v-if="action.icon" :class="Utils.getColorFromAction(action, 'icon')"/>
-                                    <template v-if="action.label">
-                                        <span :class="Utils.getColorFromAction(action, 'label')">
-                                            {{ action.label }}
-                                        </span>
-                                    </template>
-                                </button>
-                            </template>
+                            <ActionButton 
+                                :action="action" 
+                                :row="row" v-for="action in props.actions" 
+                                :key="action.event"
+                                @action="handleAction({action, row})"
+                                ></ActionButton>
                         </div>
                     </td>
                 </tr>
@@ -145,6 +138,7 @@ import * as Heroicons  from '@heroicons/vue/24/outline'
 import Filters from './Filters.vue'
 import Badges from './Badges.vue'
 import SortIcon from './SortIcon.vue'
+import ActionButton from './ActionButton.vue';
 import * as Utils  from './utils.js'
 import { useTableSorting } from './composables/tableSorting.js';
 import { useTableFilters } from './composables/tableFiltering.js';
