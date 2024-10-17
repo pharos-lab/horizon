@@ -152,29 +152,34 @@ const columnTypes = [
 }
 ]
 
-const actions = [
-  {
-    label: 'edit',
-    icon: 'PencilSquare',
-    event: 'edit',
-    colors: 'text-yellow-500'
-  },
-  {
-    label: 'voir',
-    icon: 'Eye',
-    event: 'see',
-    colors: {
-      icon: 'text-sky-500',
-      label: 'text-red-500'
+const actions = {
+  group: true,
+  icon: 'EllipsisVertical',
+  color: 'text-red-500',
+  items:[
+    {
+      label: 'edit',
+      icon: 'PencilSquare',
+      event: 'edit',
+      colors: 'text-yellow-500'
+    },
+    {
+      label: 'voir',
+      icon: 'Eye',
+      event: 'see',
+      colors: {
+        icon: 'text-sky-500',
+        label: 'text-red-500'
+      }
+    },
+    {
+      label: 'delete',
+      icon: 'Trash',
+      event: 'delete',
+      confirm: true,
     }
-  },
-  {
-    label: 'delete',
-    icon: 'Trash',
-    event: 'delete',
-    confirm: true,
-  }
-]
+  ]
+}
 </script>
 
 

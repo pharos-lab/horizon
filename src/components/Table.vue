@@ -31,7 +31,7 @@
             </thead>
 
             <tbody class="horizon-tbody">
-                <tr class="horizon-tr divide-x" v-for="(row, indexRow) in sortedData" :key="indexRow">
+                <tr class="horizon-tr " v-for="(row, indexRow) in sortedData" :key="indexRow">
                     <template v-for="(item, indexItem) in row">
                         <td is="vue:TableCell"  v-if="activeFilters.column[indexItem] !== false"
                         :key="indexItem" 
@@ -43,14 +43,20 @@
                         ></td>
                     </template>
 
-                    <td class="horizon-td text-left px-4 py-2 " v-if="props.actions">
-                        <div class="flex gap-3">
-                            <ActionButton 
+                    <td class="horizon-td text-left px-4 py-2 " v-if="props.actions.items">
+                        <div class="flex gap-2">
+                            <template v-if="props.actions.group">
+                                <DropdownAction :actions="props.actions" :row="row" @action="event => handleAction(event)"></DropdownAction>
+                            </template>
+
+                            <template v-else>
+                                <ActionButton 
                                 :action="action" 
-                                :row="row" v-for="action in props.actions" 
+                                :row="row" v-for="action in props.actions.items" 
                                 :key="action.event"
                                 @action="event => handleAction(event)"
                                 ></ActionButton>
+                            </template>
                         </div>
                     </td>
                 </tr>
@@ -95,6 +101,7 @@ import Badges from './Badges.vue'
 import SortIcon from './SortIcon.vue'
 import ActionButton from './ActionButton.vue';
 import TableCell from './TableCell.vue';
+import DropdownAction from './DropdownAction.vue';
 import * as Utils  from './utils.js'
 import { useTableSorting } from './composables/tableSorting.js';
 import { useTableFilters } from './composables/tableFiltering.js';
@@ -128,8 +135,8 @@ const props = defineProps({
         default: () => [] 
     },
     actions: {
-        type: Array,
-        default: () => [] 
+        type: Object,
+        default: () => {} 
     },
     columnFilters: {
         type: Array,
