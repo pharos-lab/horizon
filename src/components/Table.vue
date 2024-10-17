@@ -26,7 +26,7 @@
                         </th>
                     </template>
 
-                    <th v-if="props.actions"></th>
+                    <th v-if="props.actions">{{  props.actions?.label }}</th>
                 </tr>
             </thead>
 

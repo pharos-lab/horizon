@@ -5,7 +5,7 @@
         :class="props.actions.color"
         @click="isOpen = !isOpen"></component>
         
-        <div class="content absolute right-0 top-10 shadow-md border rounded z-20 bg-white min-w-52 flex flex-col gap-3" v-show="isOpen">
+        <div class="content absolute right-0 top-10 shadow-md border rounded z-20 bg-white min-w-52" v-show="isOpen">
             <div class="px-3 py-2 hover:bg-slate-100" v-for="action in props.actions.items" >
                 <ActionButton 
                 :action="action" 

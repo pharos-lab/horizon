@@ -156,6 +156,7 @@ const actions = {
   group: true,
   icon: 'EllipsisVertical',
   color: 'text-red-500',
+  label: 'actions',
   items:[
     {
       label: 'edit',
