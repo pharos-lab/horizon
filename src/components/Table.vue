@@ -1,7 +1,10 @@
 <template>
     <div class="horizon-table-wrapper">
-        <div class="horizon-options ">
-            <input type="text" v-model="searchTerm" v-if="search" class="horizon-search border" placeholder="search...">
+        <div class="horizon-options">
+            <div class="horizon-search relative" v-if="search">
+                <component :is="Heroicons['MagnifyingGlassIcon']" class="horizon-search-icon size-5 absolute top-[7px] left-2 text-slate-400"/>
+                <input type="text" v-model="searchTerm"  class="horizon-search border py-1 pl-9 rounded" placeholder="Search">
+            </div>
 
             <Filters :filters="props.filters" :activeFilters="activeFilters" @reset-filters="resetFilters"/>
 
