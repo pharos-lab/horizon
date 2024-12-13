@@ -1,6 +1,6 @@
 <template>
-    <td class="horizon-td text-left px-4 py-2" 
-        :class="Utils.getColorFromColumn(indexItem, item, tableProps)"
+    <td class="horizon-td border-y" 
+        :class="[Utils.getColorFromColumn(indexItem, item, tableProps), horizon.getRowCellPadding()]"
         > 
         <template v-if="Utils.getColumnType(indexItem, tableProps) === 'icon'">
             <component :is="Heroicons[Utils.getIconFromColumn(indexItem, item, tableProps) + 'Icon']" class="horizon-td-icon size-5"/>
@@ -53,12 +53,15 @@
 </template>
 
 <script setup>
+import { inject } from 'vue'
 import * as Utils from './utils.js'
 import * as Heroicons from '@heroicons/vue/24/outline'
 
 defineEmits(['change'])
 
 const props = defineProps(['row', 'item', 'indexItem', 'tableProps'])
+
+const horizon = inject('horizon')
 </script>
 
 <style>

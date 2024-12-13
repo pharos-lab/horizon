@@ -1,6 +1,6 @@
 <template>
     <div class="horizon-filters-wrapper relative" v-if="props.filters">
-        <div class="horizon-filters-icon" @click="isOpenFilter = !isOpenFilter">
+        <div class="horizon-filters-icon cursor-pointer" @click="isOpenFilter = !isOpenFilter">
             <FunnelIcon class="horizon-td-icon size-6 text-slate-500"/>
         </div>
         <div class="horizon-filters absolute right-0 top-10 min-w-52 z-50 p-4 bg-white shadow" v-show="isOpenFilter">
@@ -27,7 +27,7 @@
     </div>
 
     <div class="horizon-filters-column relative">
-        <div class="horizon-filters-icon" @click="isOpenColumn = !isOpenColumn">
+        <div class="horizon-filters-icon cursor-pointer" @click="isOpenColumn = !isOpenColumn">
             <ViewColumnsIcon class="horizon-td-icon size-6 text-slate-500"/>
         </div>
 

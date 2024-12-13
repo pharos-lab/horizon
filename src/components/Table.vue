@@ -17,11 +17,11 @@
         <p v-if="props.data.length === 0">no data available</p>
         <table v-else class="horizon-table w-full">
             <thead class="horizon-thead">
-                <tr class="horizon-tr bg-slate-200">
+                <tr class="horizon-tr" :class="[horizon.getHeaderClass()]">
                     <template v-for="(label, indexLabel) in (labels || Object.keys(props.data[0]))" :key="indexLabel">
                         <th
-                            class="horizon-th text-left px-4 py-2"
-                            :class="{'cursor-pointer': hasSort(label)}"
+                            class="horizon-th text-left"
+                            :class="[{'cursor-pointer': hasSort(label)}, horizon.getHeaderCellPadding()]"
                             @click="sortLabel(label)"
                             v-if="activeFilters.column[Utils.getKeyFromLabel(label, props)] !== false"
                             >
@@ -37,7 +37,7 @@
             </thead>
 
             <tbody class="horizon-tbody">
-                <tr class="horizon-tr " v-for="(row, indexRow) in sortedData" :key="indexRow">
+                <tr class="horizon-tr" v-for="(row, indexRow) in sortedData" :key="indexRow" :class="horizon.getRowClass()">
                     <template v-for="(item, indexItem) in row">
                         <td is="vue:TableCell"  v-if="activeFilters.column[indexItem] !== false"
                         :key="indexItem" 
@@ -49,7 +49,7 @@
                         ></td>
                     </template>
 
-                    <td class="horizon-td text-left px-4 py-2 " v-if="props.actions.items">
+                    <td class="horizon-td border-y" v-if="props.actions.items">
                         <div class="flex gap-2">
                             <template v-if="props.actions.group">
                                 <DropdownAction :actions="props.actions" :row="row" @action="event => handleAction(event)"></DropdownAction>
@@ -99,7 +99,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { inject } from 'vue'
 import * as Heroicons  from '@heroicons/vue/24/outline'
 
 import Filters from './Filters.vue'
@@ -160,6 +160,8 @@ const { modal, handleAction, confirmAction, closeModal } = useTableModal(emit);
 const handleChange = event => {
     emit(event.eventName, event.eventData)
 }
+
+const horizon = inject('horizon')
 
 </script>
 
