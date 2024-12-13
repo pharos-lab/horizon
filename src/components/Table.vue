@@ -4,7 +4,7 @@
             <div class="flex justify-end items-center gap-4">
                 <div class="horizon-search relative" v-if="search">
                     <component :is="Heroicons['MagnifyingGlassIcon']" class="horizon-search-icon size-5 absolute top-[7px] left-2 text-slate-400"/>
-                    <input type="text" v-model="searchTerm"  class="horizon-search border py-1 pl-9 rounded" placeholder="Search">
+                    <input type="text" v-model="searchTerm"  class="horizon-search border py-1 pl-9 rounded" :placeholder="horizon.options.search.placeholder">
                 </div>
                 
                 <Filters :filters="props.filters" :activeFilters="activeFilters" @reset-filters="resetFilters"/>

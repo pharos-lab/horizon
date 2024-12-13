@@ -1,7 +1,7 @@
 <template>
     <div class="horizon-filters-wrapper relative" v-if="props.filters">
         <div class="horizon-filters-icon cursor-pointer" @click="isOpenFilter = !isOpenFilter">
-            <FunnelIcon class="horizon-td-icon size-6 text-slate-500"/>
+            <component :is="Heroicons[horizon.options.filters.icon + 'Icon']" class="horizon-td-icon size-6 text-slate-500"/>
         </div>
         <div class="horizon-filters absolute right-0 top-10 min-w-52 z-50 p-4 bg-white shadow" v-show="isOpenFilter">
             <h3 class="font-semibold mb-4">Filters</h3>
@@ -28,7 +28,7 @@
 
     <div class="horizon-filters-column relative">
         <div class="horizon-filters-icon cursor-pointer" @click="isOpenColumn = !isOpenColumn">
-            <ViewColumnsIcon class="horizon-td-icon size-6 text-slate-500"/>
+            <component :is="Heroicons['ViewColumnsIcon']" class="horizon-td-icon size-6 text-slate-500"/>
         </div>
 
         <div class="horizon-filters absolute right-0 top-10 min-w-52 z-50 p-4 bg-white shadow flex flex-col gap-4" v-show="isOpenColumn">
@@ -44,13 +44,15 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { FunnelIcon, ViewColumnsIcon } from '@heroicons/vue/24/solid';
+import { ref, inject } from 'vue';
+import * as Heroicons  from '@heroicons/vue/24/solid';
 
 const props = defineProps({
   filters: Array,
   activeFilters: Object
 })
+
+const horizon = inject('horizon')
 
 const isOpenFilter = ref(false)
 const isOpenColumn = ref(false)

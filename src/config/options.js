@@ -11,6 +11,12 @@ export const defaultOptions = {
         text: 'text-slate-900',
         hover: '',
         cellPadding: 'px-4 py-2'
+    },
+    filters: {
+        icon: 'Funnel'
+    },
+    search: {
+        placeholder: 'Search...'
     }
 }
 
