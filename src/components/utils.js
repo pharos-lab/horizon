@@ -111,7 +111,7 @@ const getImageShape = (column, props) => {
             return 'rounded-full'
             break;
         case 'square':
-            return 'aspect-square'
+            return 'aspect-square rounded'
         default:
             return ''
     }
