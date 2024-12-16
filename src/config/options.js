@@ -1,7 +1,7 @@
 export const defaultOptions = {
     header: {
-        background: 'bg-slate-500',
-        text: 'bg-slate-900',
+        background: 'bg-slate-100',
+        text: 'text-slate-900',
         hover: '',
         cellPadding: 'px-3 py-2',
         fontSize: 'text-lg'
@@ -9,7 +9,7 @@ export const defaultOptions = {
     row: {
         background: 'bg-slate-50',
         text: 'text-slate-900',
-        hover: '',
+        hover: 'hover:bg-slate-100',
         cellPadding: 'px-4 py-2'
     },
     filters: {

@@ -18,4 +18,4 @@ const options = {
         cellPadding: 'px-4 py-2'
     }
 }
-createApp(App).use(horizon).mount('#app')
+createApp(App).use(horizon, options).mount('#app')
